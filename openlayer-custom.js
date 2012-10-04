@@ -36,6 +36,8 @@ function draw_map() {
   map.addLayer(layer_mapnik);
   map.setCenter(new OpenLayers.LonLat(lon2merc(map_lon), lat2merc(map_lat)), map_zoom);
 
+  //create legend
+  legend();
   
   //Style partially static, partially dependant on Feature (point)
   var style = new OpenLayers.Style({
@@ -157,4 +159,27 @@ function lat2merc(lat) {
   var PI = 3.14159265358979323846;
   lat = Math.log(Math.tan( (90 + lat) * PI / 360)) / (PI / 180);
   return 20037508.34 * lat / 180;
+}
+
+
+function legend(){
+  var legend = document.getElementById('legend');
+  for (var key in network_dict) {
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', key + '_canvas');
+    canvas.setAttribute('width', "60px");
+    canvas.setAttribute('height', "50px");
+
+    var context = canvas.getContext('2d');
+    context.beginPath();
+    context.arc(10, 12, 10, 0, 2 * Math.PI, false);
+    context.fillStyle = network_dict[key];
+    context.fill();
+    context.fillStyle = "black";
+    context.font = "1.3em verdana";
+    context.fillText(key, 1, 38);
+    legend.appendChild(canvas);
+  
+  }
+  
 }

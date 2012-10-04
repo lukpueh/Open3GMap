@@ -2,14 +2,23 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Connection Detection</title>
+    <title>Open3G Map</title>
     <link rel="stylesheet" type="text/css" href="o3gm.css" />  
     <script src='http://www.openlayers.org/api/OpenLayers.js' type='text/javascript'></script>
     <script src='openlayer-custom.js' type='text/javascript'></script>
     
   </head>
   <body onload="draw_map()">
-    <div id='header'>CONNECT</div>
+    <div id='header'>
+      <h1 id="headline">Open3G Map</h1>
+      <div id='legend'></div>
+    </div>
     <div id='map'></div>
+    <div id="info">
+      <a target="blank" href="mailto:lukas.puehringer[you-know]univie.ac.at">L. Pühringer</a>
+      <a target="blank" href="mailto:albert.rafetseder[you-know]univie.ac.at">A. Rafetseder</a>
+      <a target="blank" href="mailto:florian.metzger[you-know]univie.ac.at">F. Metzger</a> | 
+      <a target="blank" href="http://www.univie.ac.at">University of Vienna</a><br>
+    </div>
   </body>
 </html>

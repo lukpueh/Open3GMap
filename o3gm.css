@@ -6,9 +6,30 @@ body {
 }
 
 #header {
-  height: 100px;
+  height: 70px;
   margin-top: 0px;
   }
+
+h1 {
+  margin: 10px;
+  width: 200px;
+}
+
+.canvas_container {
+  float:left;
+  width: 70px;
+  margin-left: 10px;
+}
+
+.canvas_label {
+  padding-left: 2px;
+}
+
+#map {
+  position: relative;
+  width: 100%;
+  height: 85%;
+}
 
 #footer {
   padding-top: 5px;
@@ -16,13 +37,7 @@ body {
   width: 98%;
   text-align: right;
   position: absolute;
-  bottom:5;
-}
-
-#map {
-  position: relative;
-  width: 100%;
-  height: 80%;
+  bottom:1;
 }
 
 a:link, a:visited, a:hover, a:active {

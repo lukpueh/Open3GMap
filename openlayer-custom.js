@@ -95,8 +95,9 @@ function draw_map() {
       
       // Dictionary of Data that is shown in the PopUp Window
       var popup_data_dict = {
-        "Operator" : dict['mcc'],
+        "Operator" : dict['mcc'] + "-" + dict['mnc'],
         "Network" : dict['nw_type'],
+        "Signal Strength" :dict['rssi'],
         "GPS Accuracy" : dict['accuracy']
       };
     
@@ -162,20 +163,29 @@ function lat2merc(lat) {
 function legend(){
   var legend = document.getElementById('legend');
   for (var key in network_dict) {
+    var canvas_container = document.createElement('div');
+    canvas_container.setAttribute('class', 'canvas_container');
+    legend.appendChild(canvas_container);
+    
+    
     var canvas = document.createElement('canvas');
+    canvas_container.appendChild(canvas);
+    
     canvas.setAttribute('id', key + '_canvas');
-    canvas.setAttribute('width', "60px");
-    canvas.setAttribute('height', "50px");
-
+    canvas.setAttribute('width', "20px");
+    canvas.setAttribute('height', "20px");
     var context = canvas.getContext('2d');
     context.beginPath();
-    context.arc(10, 12, 10, 0, 2 * Math.PI, false);
+    context.arc(10, 12, 8, 0, 2 * Math.PI, false);
     context.fillStyle = network_dict[key];
     context.fill();
-    context.fillStyle = "black";
-    context.font = "1.3em verdana";
-    context.fillText(key, 1, 38);
-    legend.appendChild(canvas);
+    
+    var tag = document.createElement('label');
+    tag.setAttribute('for', key + '_canvas');
+    tag.setAttribute('class', "canvas_label");
+    tag.innerHTML = key;
+    canvas_container.appendChild(tag);
+    
   
   }
   

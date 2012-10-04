@@ -16,10 +16,9 @@ var network_dict = {
 };
 
 var point_style_dict = {
-  "point_radius" : 6,
+  "point_radius" : 7,
   "fill_opacity" : 1,
   "stroke_opacity" : 1,
-  "stroke_width" : 0.1
 };
 
 var selectControl, selectedFeature; //pop up
@@ -43,9 +42,7 @@ function draw_map() {
   var style = new OpenLayers.Style({
       pointRadius: "${point_radius}",
       fillColor: "${fill_color}",      
-      strokeWidth: "${stroke_width}",
-      fillOpacity: point_style_dict.fill_opacity,
-      strokeOpacity: point_style_dict.stroke_opacity,
+      strokeWidth: 0,
     });
   var style_map = new OpenLayers.StyleMap(style);
 
@@ -75,7 +72,7 @@ function draw_map() {
   } else {
     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  xmlhttp.open('POST','data/o3gm_readings_201210021639.txt',false);
+  xmlhttp.open('POST','data/o3gm_readings.txt',false);
   xmlhttp.send('');
   
   var csv_lines = new Array()
@@ -98,17 +95,17 @@ function draw_map() {
       
       // Dictionary of Data that is shown in the PopUp Window
       var popup_data_dict = {
-        //"operator" : dict['mcc'],
-        "network" : dict['nw_type'],
-        //"signal strength" : dict['tac']
+        "Operator" : dict['mcc'],
+        "Network" : dict['nw_type'],
+        "GPS Accuracy" : dict['accuracy']
       };
     
+      //alert(dict['accuracy']);
       // Create a new feature (visualized point)
       var feature = new OpenLayers.Feature.Vector(
         new OpenLayers.Geometry.Point(
           lon2merc(parseFloat(dict['lon'])), lat2merc(parseFloat(dict['lat']))), {
           point_radius: point_style_dict.point_radius,
-          stroke_width: point_style_dict.stroke_width,
           fill_color: network_dict[dict['nw_type']],
           popup_data_dict: popup_data_dict
         });
@@ -136,7 +133,7 @@ function onFeatureSelect(feature) {
   popup.opacity = 0.9;
   popup.contentSize = new OpenLayers.Size(150,80);
   
-  popup.contentHTML = "";
+  popup.contentHTML = "INFORMATION";
   for (var key in feature.data.popup_data_dict ) {
     popup.contentHTML += "<br>" + key + ": " + feature.data.popup_data_dict[key];
   }

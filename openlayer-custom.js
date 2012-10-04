@@ -1,8 +1,10 @@
 var map;
 var layer_mapnik;
 var operator_layer;
-var operators = new Array('generic', 'one','telering','max');
+var network_layer;
+//var operators = new Array('generic', 'one','telering','max');
 //var networks = new Array("HSPAP","HSDPA","HSUPA","UMTS"); // used only for testdatageneration
+
 var network_dict = {
   "GPRS" : "#FF0000",
   "EDGE" : "#FF7F00",
@@ -45,17 +47,17 @@ function draw_map() {
     });
   var style_map = new OpenLayers.StyleMap(style);
 
-  // One Layer for each operator 
-  operator_layer = new Array();
-  for (i = 0; i < operators.length; i++) {
-    operator_layer[i] = new OpenLayers.Layer.Vector(operators[i], {styleMap: style_map});
-    map.addLayer(operator_layer[i]);
+  network_layer = new Array();
+  for (var net in network_dict) {
+    var layer = new OpenLayers.Layer.Vector(net, {styleMap: style_map});
+    network_layer.push(layer);
+    map.addLayer(layer);
   }
+
   map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-  
   //Handler for PopUp
-  selectControl = new OpenLayers.Control.SelectFeature(operator_layer, {
+  selectControl = new OpenLayers.Control.SelectFeature(network_layer, {
                 hover: true,
                 onSelect: onFeatureSelect,
                 onUnselect: onFeatureUnselect
@@ -71,7 +73,7 @@ function draw_map() {
   } else {
     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  xmlhttp.open('POST','o3gm_readings_201210021639.txt',false);
+  xmlhttp.open('POST','data/o3gm_readings_201210021639.txt',false);
   xmlhttp.send('');
   
   var csv_lines = new Array()
@@ -108,13 +110,13 @@ function draw_map() {
           fill_color: network_dict[dict['nw_type']],
           popup_data_dict: popup_data_dict
         });
-    
+
       //append features to according operator layer
-     // for (k=0; k < operator_layer.length; k++){
-        //if (operator_layer[k].name == dict['operator'] )  {
-          operator_layer[0].addFeatures(feature);  
-       // }
-      //}
+      for (k=0; k < network_layer.length; k++){
+        if (network_layer[k].name == dict['nw_type'] )  {
+          network_layer[k].addFeatures(feature);  
+        }
+      }
     } catch(err){
       //alert(err);
     }

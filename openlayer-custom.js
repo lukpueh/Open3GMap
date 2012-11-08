@@ -54,6 +54,7 @@ function draw_map() {
   }
 
   map.addControl(new OpenLayers.Control.LayerSwitcher());
+  map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
   //Handler for PopUp
   selectControl = new OpenLayers.Control.SelectFeature(network_layer, {

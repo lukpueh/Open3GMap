@@ -3,22 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <title>Open3G Map</title>
-    <link rel="stylesheet" type="text/css" href="o3gm.css" />  
-    <script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"></script>
-    <script src="openlayer-custom.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />  
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/map.js"></script>
     
+    <script type="text/javascript" charset="utf-8">
+      
+      //Navigation
+      $(document).ready(function(){
+         $('ul#navi a').click(function() {
+          var curr_index = $(this).parent().prevAll().length + 1;
+          $('#navi').children('.current').removeClass('current');
+          $(this).parent().addClass('current');
+        
+      		$('#sidebar').children('.current').hide('fast',function() {
+      			$(this).removeClass('current');
+      			$(this).parent().children('div:nth-child('+curr_index+')').show('fast',function() {
+      				$(this).addClass('current');
+      			});
+      		});
+      		return false;    
+         });
+        
+      init_map();
+        
+      });
+      
+    </script>
   </head>
-  <body onload="draw_map()">
-    <div id="header">
-      <h1 id="headline">Open3G Map</h1>
-      <div id="legend"></div>
-    </div>
-    <div id="map"></div>
-    <div id="footer">
-      <a target="blank" href="mailto:lukas.puehringer[you-know]univie.ac.at">L. Pühringer</a>
-      <a target="blank" href="mailto:albert.rafetseder[you-know]univie.ac.at">A. Rafetseder</a>
-      <a target="blank" href="mailto:florian.metzger[you-know]univie.ac.at">F. Metzger</a> | 
-      <a target="blank" href="http://www.univie.ac.at">University of Vienna</a><br>
-    </div>
+  <body >
+    <div id="page-container">
+      <div id="header">
+        <h1>Open3G Map</h1>
+        <ul id="navi">
+          <li class="current"><a href="#">color info</a></li>
+          <li><a href="#">feature info</a></li>
+          <li><a href="#">contact</a></li>
+          <li><a href="#">controls</a></li>
+        </ul>
+      </div>
+      
+      <div id="sidebar">
+        <div id="color-info" class="info current"></div>
+        
+        <div id="feature-info" class="info"></div>
+        <div class="info">      
+          <a target="blank" 
+            href="mailto:lukas.puehringer[you-know]univie.ac.at">
+            L. Pühringer</a>
+          <a target="blank"
+           href="mailto:albert.rafetseder[you-know]univie.ac.at">
+            A. Rafetseder</a>
+          <a target="blank" 
+            href="mailto:florian.metzger[you-know]univie.ac.at">
+            F. Metzger</a> 
+          <a target="blank" 
+            href="http://www.univie.ac.at">
+            University of Vienna</a><br>
+        </div>
+        <div id="controls" class="info"></div>
+      </div>
+
+      <div id="map"></div>
+    <div>
+
   </body>
 </html>

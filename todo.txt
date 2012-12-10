@@ -1,0 +1,10 @@
+-upload to github
+
+
+- all jqueryfy!
+- seperate javascript concerns (olm, navigation, legende, color-table,..)
+- optimize select control
+
+- style, style, style
+- change hover to click
+

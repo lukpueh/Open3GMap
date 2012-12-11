@@ -16,14 +16,14 @@ $(document).ready(function(){
   var legend = document.getElementById('color-info');
   for (var key in network_dict) {
     var canvas_container = document.createElement('span');
-    canvas_container.setAttribute('class', 'canvas_container');
+    canvas_container.setAttribute('class', 'canvas-container');
     legend.appendChild(canvas_container);
     
     
     var canvas = document.createElement('canvas');
     canvas_container.appendChild(canvas);
     
-    canvas.setAttribute('id', key + '_canvas');
+    canvas.setAttribute('id', key + '-canvas');
     canvas.setAttribute('width', "22px");
     canvas.setAttribute('height', "20px");
     var context = canvas.getContext('2d');
@@ -33,8 +33,8 @@ $(document).ready(function(){
     context.fill();
     
     var tag = document.createElement('label');
-    tag.setAttribute('for', key + '_canvas');
-    tag.setAttribute('class', "canvas_label");
+    tag.setAttribute('for', key + '-canvas');
+    tag.setAttribute('class', "canvas-label");
     tag.innerHTML = key;
     canvas_container.appendChild(tag);
     

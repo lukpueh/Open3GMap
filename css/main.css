@@ -40,7 +40,7 @@ h1{
   bottom: 30px;
   width: 200px;
   float: left;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #map {

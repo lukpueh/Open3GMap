@@ -1,6 +1,3 @@
--upload to github
-
-
 - all jqueryfy!
 - seperate javascript concerns (olm, navigation, legende, color-table,..)
 - optimize select control

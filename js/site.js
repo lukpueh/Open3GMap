@@ -15,7 +15,7 @@ $(document).ready(function(){
 
   var legend = document.getElementById('color-info');
   for (var key in network_dict) {
-    var canvas_container = document.createElement('div');
+    var canvas_container = document.createElement('span');
     canvas_container.setAttribute('class', 'canvas_container');
     legend.appendChild(canvas_container);
     
@@ -24,7 +24,7 @@ $(document).ready(function(){
     canvas_container.appendChild(canvas);
     
     canvas.setAttribute('id', key + '_canvas');
-    canvas.setAttribute('width', "30px");
+    canvas.setAttribute('width', "22px");
     canvas.setAttribute('height', "20px");
     var context = canvas.getContext('2d');
     context.beginPath();

@@ -24,50 +24,47 @@ h1{
   float: left;
   width: 200px;
 }
-#navi {
-  margin:  0 0 0 0;
-  list-style: none;
-  padding: 17px 0 0 40px;
-  text-align: center;
+#color-info {
+  padding: 17px 0 0 0;
+  overflow: hidden;
 }
 
-ul#navi a { 
-  float: left;
-  width: 90px;
-  background: black;
-  color: #F1EEE8;
-  border: 4px solid black;
-  display: block;
-  text-decoration: none;
-}
-  
-ul#navi a:hover, ul#navi li.current a { 
-  background: #F1EEE8;
-  color: black;
+.canvas_container {
+  margin:  0 0 0 20px;
+  white-space: nowrap;
 }
 
 #sidebar {
   position: absolute;
-  margin-top: 60px;
+  top: 60px;
+  bottom: 30px;
   padding: 8px 0 0 8px;
   width: 200px;
   float: left;
 }
 
-#sidebar div.info {
-  display: none;
-}
-
-#sidebar div.current {
-  display: block;
-}
-
 #map {
   position: absolute;
-  bottom: 0px;
+  bottom: 30px;
   top: 60px;
   left: 200px;
   right: 0px;
   overflow: auto;
 }
 
+#footer {
+  bottom: 0px;
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  padding-top: 20px;
+  text-align: right;
+}
+
+.info {
+  position: relative;
+  top: 10px;
+  right: 10px;
+  text-decoration: none;
+  color: black;
+}

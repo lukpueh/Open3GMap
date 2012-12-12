@@ -36,6 +36,7 @@ function init_map() {
     $.each($.parseJSON(data), function(key,val){
         draw_point_feature(val.nw_type, val.lon, val.lat, val);
       });
+      
   });
   
   $.get('cells.php', function(data, status){

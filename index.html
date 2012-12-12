@@ -13,22 +13,20 @@
       
       //Navigation
       $(document).ready(function(){
-         $('ul#navi a').click(function() {
-          var curr_index = $(this).parent().prevAll().length + 1;
-          $('#navi').children('.current').removeClass('current');
-          $(this).parent().addClass('current');
-        
-      		$('#sidebar').children('.current').hide('fast',function() {
-      			$(this).removeClass('current');
-      			$(this).parent().children('div:nth-child('+curr_index+')').show('fast',function() {
-      				$(this).addClass('current');
-      			});
-      		});
-      		return false;    
-         });
+
         
       init_map();
-        
+      // $("#sidebar").append("<button type='button'>Click</button>");
+      // $("button").click(function(e){
+      //     var features = layers_object["UMTS"].features;
+      //     console.log(features);
+      //     for( var i = 0; i < features.length; i++ ) {
+      //       features[i].style = { visibility: 'hidden' };
+      //     }
+      //     
+      //     layers_object["UMTS"].redraw();
+      //   
+      //   });
       });
       
     </script>

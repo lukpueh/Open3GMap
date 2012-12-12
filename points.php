@@ -4,7 +4,7 @@ include("jarvis.php");
 
 //BEGIN creating POINTS
 $o3gm_point_array = array();
-$file_handle = fopen("data/o3gm_readings.txt", "r");
+$file_handle = fopen("data/o3gm_readings.txt.latest", "r");
 while(($data = fgetcsv($file_handle, 4000, " ")) !== FALSE) {
   $o3gm_point_array[] = $data;
 }

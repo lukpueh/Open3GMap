@@ -9,6 +9,7 @@
 import jarvismarch
 import geojson
 import csv
+import math
 
 fileName = "../data/o3gm_readings.txt.latest"
 data = csv.DictReader(open(fileName), delimiter=" ")
@@ -18,7 +19,11 @@ cellDict = {}
 
 for row in data:
   # PointFeatures
-  point = [float(row["lon"]), float(row["lat"])]
+  x = float(row["lon"]) * 20037508.34 / 180
+  y = math.log(math.tan( (90 + float(row["lat"])) * math.pi / 360)) / (math.pi / 180)
+  y = 20037508.34 * y / 180;
+  
+  point = [x, y]
   geoJsonPoint = geojson.Point(point)
   geoJsonFeature = geojson.Feature(geometry=geoJsonPoint, properties=row)
   pointFeatureArray.append(geoJsonFeature)

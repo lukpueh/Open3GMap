@@ -17,13 +17,14 @@ html, body {
   position: absolute;
   height: 60px;
   width: 100%;
+  white-space: nowrap;
 }
 
 h1{
   margin: 0 0 0 0;
   padding: 10px 0 0 10px;
   float: left;
-  width: 200px;
+  min-width: 200px;
 }
 #color-info {
   padding: 17px 0 0 0;

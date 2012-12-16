@@ -1,6 +1,17 @@
 - all jqueryfy!
-- seperate javascript concerns (olm, navigation, legende, color-table,..)
-- optimize select control
+- add click out
+
+layers: 
+points
+cells
+lacs
+
+show / hide layer
+show / hide after property for cells and lacs
+
+differnt styles for layers
+different select control
+
 
 - style, style, style
 - change hover to click

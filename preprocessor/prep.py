@@ -11,8 +11,8 @@ import geojson
 import csv
 import math
 
-fileName = "../data/o3gm_readings.txt.latest"
-data = csv.DictReader(open(fileName), delimiter=" ")
+fileName = "../data/o3gmreadings121212.txt"
+data = csv.DictReader(open(fileName), delimiter=" ", quotechar="'")
 
 pointFeatureArray = []
 cellDict = {}
@@ -55,8 +55,8 @@ pointCollection = geojson.FeatureCollection(pointFeatureArray)
 cellCollection = geojson.FeatureCollection(cellFeatureArray)
 
  
-f = open(fileName + ".points.json", 'w')
+f = open("points.json", 'w')
 f.write(geojson.dumps(pointCollection))
-f = open(fileName + ".cells.json", 'w')
+f = open("cells.json", 'w')
 f.write(geojson.dumps(cellCollection))
 

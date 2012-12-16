@@ -59,12 +59,14 @@ $(document).ready(function(){
   //#### VECTORS 
   var geojson_format = new OpenLayers.Format.GeoJSON();
   
-
   var points_layer = new OpenLayers.Layer.Vector("Points",{
     styleMap: point_style_map
   }); 
+  
   var cells_layer = new OpenLayers.Layer.Vector("Cells");
-  var layers = [points_layer, cells_layer];
+  var lacs_layer = new OpenLayers.Layer.Vector("Lacs");
+
+  var layers = [points_layer, cells_layer, lacs_layer];
   map.addLayers(layers);
   
   var file_name = "data/points.json";
@@ -74,6 +76,11 @@ $(document).ready(function(){
   file_name = "data/cells.json";
   $.get(file_name, function(data,status) {
     cells_layer.addFeatures(geojson_format.read(data));
+  });
+  
+  file_name = "data/lac.json";
+  $.get(file_name, function(data,status) {
+    lacs_layer.addFeatures(geojson_format.read(data));
   });
   
 

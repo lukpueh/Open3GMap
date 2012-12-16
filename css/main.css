@@ -37,12 +37,14 @@ h1{
 
 #sidebar {
   position: absolute;
+  padding-left: 10px;
   top: 60px;
   bottom: 30px;
   width: 200px;
   float: left;
   overflow: auto;
 }
+
 
 #map {
   position: absolute;

@@ -10,37 +10,50 @@ import jarvismarch
 import geojson
 import csv
 import math
-
+  
 fileName = "../data/o3gmreadings121212.txt"
 data = csv.DictReader(open(fileName), delimiter=" ", quotechar="'")
 
 pointFeatureArray = []
-cellDict = {}
+polygonPoints = {
+  "cells" : {},
+  "lacs" : {}
+}
+
+def lon_to_merc(lon):
+  return float(lon) * 20037508.34 / 180
+  
+def lat_to_merc(lat):
+  y = float(lat)
+  y = math.log(math.tan( (90 + y) * math.pi / 360)) / (math.pi / 180)
+  return 20037508.34 * y / 180
+  
+def add_polygon_point(name, id, point):
+  try:
+    polygonPoints[name][id]
+  except:
+    polygonPoints[name][id] = []
+  finally:
+    polygonPoints[name][id].append(point)
+
 
 for row in data:
   # PointFeatures
-  x = float(row["lon"]) * 20037508.34 / 180
-  y = math.log(math.tan( (90 + float(row["lat"])) * math.pi / 360)) / (math.pi / 180)
-  y = 20037508.34 * y / 180;
+  x = lon_to_merc(row["lon"])
+  y = lat_to_merc(row["lat"])
   
   point = [x, y]
   geoJsonPoint = geojson.Point(point)
   geoJsonFeature = geojson.Feature(geometry=geoJsonPoint, properties=row)
   pointFeatureArray.append(geoJsonFeature)
   
-  # Cells
-  cell = str(row["cell_id"])
-  try:
-    cellDict[cell]
-  except:
-    cellDict[cell] = []
-  finally:
-    cellDict[cell].append(point)
-  
-  
+  add_polygon_point("cells", row["cell_id"], point)
+  if (row["lac"] != "UnknownLAC"):
+    add_polygon_point("lacs", row["lac"], point)
+    
 cellFeatureArray = []
 #CellFeature
-for cell, points in cellDict.iteritems(): 
+for cell, points in polygonPoints["cells"].iteritems(): 
   if (len(points) >= 3):
     coordinates = jarvismarch.convex_hull(points)
     coordinates.append(coordinates[0])
@@ -48,15 +61,31 @@ for cell, points in cellDict.iteritems():
     geoJsonFeature = geojson.Feature(geometry=geoJsonPolygon,
                                     properties={"cell_id" : cell})
     cellFeatureArray.append(geoJsonFeature)
-                      
+
+lacFeatureArray = []
+for lac, points in polygonPoints["lacs"].iteritems(): 
+  if (len(points) >= 3):
+    coordinates = jarvismarch.convex_hull(points)
+    coordinates.append(coordinates[0])
+    geoJsonPolygon = geojson.Polygon([coordinates])
+    geoJsonFeature = geojson.Feature(geometry=geoJsonPolygon,
+                                    properties={"lac" : lac})
+    lacFeatureArray.append(geoJsonFeature)
+
 
 
 pointCollection = geojson.FeatureCollection(pointFeatureArray)
 cellCollection = geojson.FeatureCollection(cellFeatureArray)
+lacCollection = geojson.FeatureCollection(lacFeatureArray)
+
 
  
-f = open("points.json", 'w')
+f = open("../data/points.json", 'w')
 f.write(geojson.dumps(pointCollection))
-f = open("cells.json", 'w')
+f = open("../data/cells.json", 'w')
 f.write(geojson.dumps(cellCollection))
+f = open("../data/lac.json", 'w')
+f.write(geojson.dumps(lacCollection))
+
+
 

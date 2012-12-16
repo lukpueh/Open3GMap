@@ -17,22 +17,30 @@ var network_dict = {
     "HSDPA" : "#00FF7F",
     "HSPAP" : "#00FFFF"
   };
+  
+  
 
 
 $(document).ready(function(){
   
   //#### MAP
   var map_lon = 16.355, map_lat = 48.22, map_zoom = 12;
-  var proj = new OpenLayers.Projection("EPSG:4326");
-  var point = new OpenLayers.LonLat(map_lon, map_lat);
   var map = new OpenLayers.Map('map');
-  
   var layer_mapnik = new OpenLayers.Layer.OSM( "OpenLayers Mapnik");
   map.addLayer(layer_mapnik);
-
-  map.setCenter(point.transform(proj, map.getProjectionObject()), map_zoom);
+  
+  function setCenter() {
+    var proj = new OpenLayers.Projection("EPSG:4326");
+    var point = new OpenLayers.LonLat(map_lon, map_lat);
+    map.setCenter(point.transform(proj, map.getProjectionObject()), map_zoom);
+  }
+  
+  setCenter();
+  $('#controls').append("<button id='home' type='button'>home</button>");
+  $('#home').click(setCenter);
+      
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
+  map.addControl(new OpenLayers.Control.LayerSwitcher());
 
   
   //#### STYLE
@@ -83,7 +91,6 @@ $(document).ready(function(){
     lacs_layer.addFeatures(geojson_format.read(data));
   });
   
-
 
   //### SELECT
   var options = {

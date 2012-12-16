@@ -38,16 +38,21 @@ def add_polygon_point(name, id, point):
 
 
 for row in data:
-  # PointFeatures
+  # Create Points
   x = lon_to_merc(row["lon"])
   y = lat_to_merc(row["lat"])
-  
   point = [x, y]
+  
+  # Create Point Features
   geoJsonPoint = geojson.Point(point)
   geoJsonFeature = geojson.Feature(geometry=geoJsonPoint, properties=row)
   pointFeatureArray.append(geoJsonFeature)
   
+  # create point collections for cells
   add_polygon_point("cells", row["cell_id"], point)
+  
+  
+  # create point collections for lacs
   if (row["lac"] != "UnknownLAC"):
     add_polygon_point("lacs", row["lac"], point)
     

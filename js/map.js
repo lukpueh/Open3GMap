@@ -44,22 +44,55 @@ $(document).ready(function(){
 
   
   //#### STYLE
-  
-   var point_style = new OpenLayers.Style({
-            pointRadius: 5,
-            fillColor: "${fill}",
-            fillOpacity: 0.7,
-            strokeWidth: 0
-          }, {
-            context: {
-              fill: function(feature) {
+          
+  var point_style_map = new OpenLayers.StyleMap({
+   "default": new OpenLayers.Style({
+          pointRadius: 6,
+          fillColor: "${fill}",
+          fillOpacity: 0.8,
+          strokeWidth: 0
+        }, { context: { fill: function(feature) {
                 return network_dict[feature.attributes.nw_type];
               }
-          }
-      });
-      
-  var point_style_map = new OpenLayers.StyleMap({"default": point_style});
-  
+            }
+          }),
+    "select": new OpenLayers.Style({
+          fillOpacity: 1,
+          strokeWidth: 1,
+      })
+    });
+    
+  var cell_style_map = new OpenLayers.StyleMap({
+   "default": new OpenLayers.Style({
+          fillColor: "${fill}",
+          fillOpacity: 0.4,
+          strokeColor: "#000000",
+          strokeWidth: 0.5,
+        }, { context: { fill: function(feature) {
+                return network_dict[feature.attributes.pnt];
+              }
+            }
+          }),
+    "select": new OpenLayers.Style({
+          fillOpacity: 1,
+          strokeWidth: 1,
+      })
+    });
+    
+    
+  var lac_style_map = new OpenLayers.StyleMap({
+   "default": new OpenLayers.Style({
+          fillColor: "#FFFFFF",
+          fillOpacity: 0.4,
+          strokeColor: "#000000",
+          strokeWidth: 0.5,
+        }),
+    "select": new OpenLayers.Style({
+          fillOpacity: 1,
+          strokeWidth: 1,
+      })
+    });
+        
   //#### Cluster
   // var cluster_strategy = new OpenLayers.Strategy.Cluster({distance: 4});
 
@@ -71,8 +104,12 @@ $(document).ready(function(){
     styleMap: point_style_map
   }); 
   
-  var cells_layer = new OpenLayers.Layer.Vector("Cells");
-  var lacs_layer = new OpenLayers.Layer.Vector("Lacs");
+  var cells_layer = new OpenLayers.Layer.Vector("Cells",{
+    styleMap: cell_style_map
+  });
+  var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
+    styleMap: lac_style_map
+  });
 
   var layers = [points_layer, cells_layer, lacs_layer];
   map.addLayers(layers);
@@ -90,16 +127,24 @@ $(document).ready(function(){
   $.get(file_name, function(data,status) {
     lacs_layer.addFeatures(geojson_format.read(data));
   });
-  
 
   //### SELECT
+  function appendAttributes(attributes) {
+    for (var key in attributes) {
+      if (key == "nw_types") {
+        $("#feature-info").append(key + ": <br>");
+        appendAttributes(attributes[key]);
+      }
+      else
+        $("#feature-info").append(key + ": " + attributes[key] +"<br>");
+    };
+  }
+  
   var options = {
     hover: true,
     onSelect: function(feature){
       $("#feature-info").html("");
-      for (var key in feature.attributes) {
-        $("#feature-info").append(key + ": " + feature.attributes[key] +"<br>");
-      };
+      appendAttributes(feature.attributes);
     }
   };
   var select = new OpenLayers.Control.SelectFeature(layers, options);

@@ -86,7 +86,7 @@ $(document).ready(function(){
     cells_layer.addFeatures(geojson_format.read(data));
   });
   
-  file_name = "data/lac.json";
+  file_name = "data/lacs.json";
   $.get(file_name, function(data,status) {
     lacs_layer.addFeatures(geojson_format.read(data));
   });

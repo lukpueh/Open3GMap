@@ -77,8 +77,6 @@ for lac, points in polygonPoints["lacs"].iteritems():
                                     properties={"lac" : lac})
     lacFeatureArray.append(geoJsonFeature)
 
-
-
 pointCollection = geojson.FeatureCollection(pointFeatureArray)
 cellCollection = geojson.FeatureCollection(cellFeatureArray)
 lacCollection = geojson.FeatureCollection(lacFeatureArray)

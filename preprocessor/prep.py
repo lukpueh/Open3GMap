@@ -2,6 +2,8 @@ import jarvismarch
 import geojson
 import csv
 import math
+import os
+import sys
 
 class Container:
   def __init__(self):
@@ -130,12 +132,24 @@ class Lac(Polygon):
 
 # Create Points and write Point featurecollection
 
-file_name = "../data/o3gmreadings121212.txt"
+
+path = "../data/"
+
+try:
+  filename = sys.argv[1]
+  os.path.exists(filename)
+except:
+  print "USAGE: python "+sys.argv[0]+" <filename>"
+  sys.exit(2)
+
+if not os.path.exists(path):
+    os.makedirs(path)
+
 container = Container()
-container.create_points(file_name)
+container.create_points(filename)
 container.create_cells()
 container.create_lacs()
-container.create_feature_collections("../data/")
+container.create_feature_collections(path)
 
   
 

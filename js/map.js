@@ -17,9 +17,6 @@ var network_dict = {
     "HSDPA" : "#00FF7F",
     "HSPAP" : "#00FFFF"
   };
-  
-  
-
 
 $(document).ready(function(){
   
@@ -103,6 +100,7 @@ $(document).ready(function(){
   var points_layer = new OpenLayers.Layer.Vector("Points",{
     styleMap: point_style_map
   }); 
+  points_layer.setVisibility(0);
   
   var cells_layer = new OpenLayers.Layer.Vector("Cells",{
     styleMap: cell_style_map
@@ -126,6 +124,28 @@ $(document).ready(function(){
   file_name = "data/lacs.json";
   $.get(file_name, function(data,status) {
     lacs_layer.addFeatures(geojson_format.read(data));
+  });
+  
+  //### Show / Hide
+  
+  for (var key in network_dict){
+    $('#controls').append("<br><input type='checkbox' class='show_nw' checked='checked' value='"+key+"'>" + key);
+  }
+  
+  $(document).on('change', '.show_nw', function(e) {
+    var features = cells_layer.features;
+    for (var i = 0; i < features.length; i++) {
+      if (this.value == features[i].attributes.pnt) {
+        if (features[i].style == null)
+          features[i].style = { display : 'none' };
+        else
+          features[i].style = null;
+        
+        
+        //else features[i].style = { display : 'inline' };
+      }
+    }
+    cells_layer.redraw();
   });
 
   //### SELECT

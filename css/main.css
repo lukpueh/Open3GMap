@@ -26,6 +26,7 @@ h1{
   float: left;
   min-width: 200px;
 }
+
 #color-info {
   padding: 17px 0 0 0;
 }
@@ -40,17 +41,30 @@ h1{
   padding-left: 10px;
   top: 60px;
   bottom: 30px;
-  width: 200px;
+  width: 209px;
   float: left;
   overflow: auto;
 }
 
+#sidebar-tg {
+  position: absolute;
+  bottom: 30px;
+  top: 60px;
+  left: 222px;
+  width:10px;
+  right: 0px;
+  background: #808080;
+}
+
+#sidebar-tg:hover {
+  background: #000000;
+}
 
 #map {
   position: absolute;
   bottom: 30px;
   top: 60px;
-  left: 200px;
+  left: 233px;
   right: 0px;
 }
 

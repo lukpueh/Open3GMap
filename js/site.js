@@ -1,4 +1,17 @@
 $(document).ready(function(){
+  
+  
+  //sidebar toggle
+  $('#sidebar-tg').toggle(
+    function() {
+      $('#map').animate({left: 12});
+      $('#sidebar-tg').animate({left: 1});
+      $('#sidebar').hide();
+    }, function() {
+      $('#map').animate({left: 233});
+      $('#sidebar-tg').animate({left: 222});
+      $('#sidebar').show();
+    });
 
   //outsource to configfile
   var network_dict = {

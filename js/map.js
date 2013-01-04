@@ -140,9 +140,6 @@ $(document).ready(function(){
           features[i].style = { display : 'none' };
         else
           features[i].style = null;
-        
-        
-        //else features[i].style = { display : 'inline' };
       }
     }
     cells_layer.redraw();

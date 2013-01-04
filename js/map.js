@@ -30,18 +30,12 @@ $(document).ready(function(){
     var proj = new OpenLayers.Projection("EPSG:4326");
     var point = new OpenLayers.LonLat(map_lon, map_lat);
     map.setCenter(point.transform(proj, map.getProjectionObject()), map_zoom);
-  }
-  
+  }  
   setCenter();
-  $('#controls').append("<button id='home' type='button'>home</button>");
-  $('#home').click(setCenter);
-      
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
-  map.addControl(new OpenLayers.Control.LayerSwitcher());
+  //map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-  
-  //#### STYLE
-          
+  //#### STYLE 
   var point_style_map = new OpenLayers.StyleMap({
    "default": new OpenLayers.Style({
           pointRadius: 6,
@@ -79,7 +73,6 @@ $(document).ready(function(){
   //#### Cluster
   // var cluster_strategy = new OpenLayers.Strategy.Cluster({distance: 4});
 
-
   //#### VECTORS 
   var geojson_format = new OpenLayers.Format.GeoJSON();
   
@@ -114,28 +107,48 @@ $(document).ready(function(){
   
   //### Show / Hide
   
-  for (var key in network_dict){
-    $('#controls').append("<br><input type='checkbox' class='show_nw' checked='checked' value='"+key+"'>" + key);
-  }
+  // for (var key in network_dict){
+  //   $('#controls').append("<br><input type='checkbox' class='show_nw' checked='checked' value='"+key+"'>" + key);
+  // }
+  // 
+  // $(document).on('change', '.show_nw', function(e) {
+  //   var features = cells_layer.features;
+  //   for (var i = 0; i < features.length; i++) {
+  //     if (this.value == features[i].attributes.pnt) {
+  //       if (features[i].style == null)
+  //         features[i].style = { display : 'none' };
+  //       else
+  //         features[i].style = null;
+  //     }
+  //   }
+  //   cells_layer.redraw();
+  // });
   
-  $(document).on('change', '.show_nw', function(e) {
-    var features = cells_layer.features;
-    for (var i = 0; i < features.length; i++) {
-      if (this.value == features[i].attributes.pnt) {
-        if (features[i].style == null)
-          features[i].style = { display : 'none' };
-        else
-          features[i].style = null;
-      }
-    }
-    cells_layer.redraw();
+  $(document).on('change', '.show_layer', function(e) {
+    var layer =  eval(e.target.value);
+    layer.getVisibility() ? layer.setVisibility(0) : layer.setVisibility(1);
   });
+  
+  $('#controls').append(
+    "<table class='sidebar-table'>"+
+      "<tr><td> Points </td>" +
+      "<td><input type='checkbox' class='show_layer' value='points_layer'></td></tr>"+
+      "<tr><td> Cells </td>" +
+      "<td><input type='checkbox' class='show_layer' checked='checked' value='cells_layer'></td></tr>"+
+      "<tr><td> Lacs </td>" +
+      "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>"+
+    "</table>");
+   
+  
+  //### HOMEBUTTON
+  $('#controls').append("<div id='get-home' class='click-bar'>set center</div>");
+  $('#get-home').click(setCenter);
 
   //### SELECT
   
   function selectPoint(attr){
     $("#feature-info").append(
-      "<table class='feature-info-tb'>"+
+      "<table class='sidebar-table'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
@@ -155,15 +168,15 @@ $(document).ready(function(){
   
   function _makeNwRows(attr) {
     rows = ""
-    // for (var key in attr) {
-    //   rows += "<tr><td>"+key+"</td><td>"+ attr[key] +"</td><td>";
-    // }
+    for (var key in attr) {
+      rows += "<tr><td>"+key+"</td><td>"+ attr[key] +"</td><td>";
+    }
     return rows
   }
   
   function selectCell(attr){
     $("#feature-info").append(
-      "<table class='feature-info-tb'>"+
+      "<table class='sidebar-table'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
@@ -175,7 +188,7 @@ $(document).ready(function(){
   
   function selectLac(attr){
     $("#feature-info").append(
-      "<table class='feature-info-tb'>"+
+      "<table class='sidebar-table'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
       "<tr><td> PNT </td><td>"+ attr["pnt"] +"</td><td>"+

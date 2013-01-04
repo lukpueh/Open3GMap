@@ -46,6 +46,12 @@ h1{
   overflow: auto;
 }
 
+h2 {
+  font-size: 1.1em;
+  font-family: arial;
+  margin: 0 0 0 0;
+}
+
 #sidebar-tg {
   position: absolute;
   bottom: 30px;
@@ -53,30 +59,46 @@ h1{
   left: 222px;
   width:10px;
   right: 0px;
-  background: #808080;
 }
 
-#sidebar-tg:hover {
+#get-home {
+  width: 100px;
+  border-radius: 5px;
+}
+
+.click-bar {
+  background: #808080;
+  color: #F1EEE8;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+.click-bar:hover {
   background: #000000;
 }
 
+.sidebar-unit {
+  margin-bottom: 40px;
+  border-top: 1px solid white;
+}
 
-.feature-info-tb {
+.sidebar-table {
+  margin-top: 10px;
   border-collapse: collapse;
   border-style: hidden;
 }
 
-.feature-info-tb tr {
+.sidebar-table tr {
   border: 1px solid #FFFFFF;
 
 }
 
-.feature-info-tb td:first-child { 
+.sidebar-table td:first-child { 
   width: 80px;
   font-size: 0.8em; 
   font-style: italic;
   }
-.feature-info-tb td:nth-child(2) { 
+.fsidebar-table td:nth-child(2) { 
   width: 120px;
   }
 

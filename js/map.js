@@ -59,7 +59,7 @@ $(document).ready(function(){
       })
     });
     
-  var cell_style_map = new OpenLayers.StyleMap({
+  var polygon_style_map = new OpenLayers.StyleMap({
    "default": new OpenLayers.Style({
           fillColor: "${fill}",
           fillOpacity: 0.4,
@@ -70,20 +70,6 @@ $(document).ready(function(){
               }
             }
           }),
-    "select": new OpenLayers.Style({
-          fillOpacity: 1,
-          strokeWidth: 1,
-      })
-    });
-    
-    
-  var lac_style_map = new OpenLayers.StyleMap({
-   "default": new OpenLayers.Style({
-          fillColor: "#FFFFFF",
-          fillOpacity: 0.4,
-          strokeColor: "#000000",
-          strokeWidth: 0.5,
-        }),
     "select": new OpenLayers.Style({
           fillOpacity: 1,
           strokeWidth: 1,
@@ -103,10 +89,10 @@ $(document).ready(function(){
   points_layer.setVisibility(0);
   
   var cells_layer = new OpenLayers.Layer.Vector("Cells",{
-    styleMap: cell_style_map
+    styleMap: polygon_style_map
   });
   var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
-    styleMap: lac_style_map
+    styleMap: polygon_style_map
   });
 
   var layers = [points_layer, cells_layer, lacs_layer];
@@ -146,22 +132,76 @@ $(document).ready(function(){
   });
 
   //### SELECT
-  function appendAttributes(attributes) {
-    for (var key in attributes) {
-      if (key == "nw_types") {
-        $("#feature-info").append(key + ": <br>");
-        appendAttributes(attributes[key]);
-      }
-      else
-        $("#feature-info").append(key + ": " + attributes[key] +"<br>");
-    };
+  
+  function selectPoint(attr){
+    $("#feature-info").append(
+      "<table>"+
+      "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
+      "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
+      "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
+      "<tr><td> Tac ID </td><td>"+ attr["tac"] +"</td><td>"+     
+      "<tr><td> Operator  </td><td>"+ attr["mcc"]+ attr["mnc"] +"</td><td>"+
+      "<tr><td> IP </td><td>"+ attr["ip"] +"</td><td>"+
+      "<tr><td> RSSI  </td><td>"+ attr["rssi"] +"</td><td>"+
+      "<tr><td> Longitude  </td><td>"+ attr["lon"] +"</td><td>"+
+      "<tr><td> Latitude  </td><td>"+ attr["lat"] +"</td><td>"+
+      "<tr><td> GPS accuracy </td><td>"+ attr["accuracy"] +"</td><td>"+
+      "<tr><td> Vendor </td><td>"+ attr["vendor"] +"</td><td>"+
+      "<tr><td> Model </td><td>"+ attr["model"] +"</td><td>"+
+      "<tr><td> Battery  </td><td>"+ attr["battery_level"] +"</td><td>"+
+      "</table>"
+      );
+  }
+  
+  function _makeNwRows(attr) {
+    rows = ""
+    // for (var key in attr) {
+    //   rows += "<tr><td>"+key+"</td><td>"+ attr[key] +"</td><td>";
+    // }
+    return rows
+  }
+  
+  
+  function selectCell(attr){
+    $("#feature-info").append(
+      "<table>"+
+      "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
+      "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
+      "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
+      "<tr><td> PNT </td><td>"+ attr["pnt"] +"</td><td>"+
+      _makeNwRows(attr["nw_types"]) +
+      "</table>"
+      );
+  }
+  
+  function selectLac(attr){
+    $("#feature-info").append(
+      "<table>"+
+      "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
+      "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
+      "<tr><td> PNT </td><td>"+ attr["pnt"] +"</td><td>"+
+      _makeNwRows(attr["nw_types"]) +
+      "</table>"
+      );
   }
   
   var options = {
     hover: true,
     onSelect: function(feature){
       $("#feature-info").html("");
-      appendAttributes(feature.attributes);
+      switch (feature.attributes.type){
+        case "point":
+          selectPoint(feature.attributes);
+          break;
+        case "cell":
+          selectCell(feature.attributes);
+          break;
+        case "lac":
+          selectLac(feature.attributes);
+          break;
+        default:
+          break;
+      }
     }
   };
   var select = new OpenLayers.Control.SelectFeature(layers, options);

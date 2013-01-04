@@ -54,6 +54,7 @@ class Point:
   def __init__(self, lon, lat, properties):
     self.coordinates = [self.lon_to_merc(lon), self.lat_to_merc(lat)]
     self.properties = properties
+    self.properties["type"] = "point"
     
   def lon_to_merc(self, lon):
     return float(lon) * 20037508.34 / 180
@@ -83,21 +84,8 @@ class Polygon:
   def get_feature(self):
     return geojson.Feature(geometry=geojson.Polygon([self.ring]),\
                             properties=self.properties) 
-
-class Cell(Polygon):
-  def __init__(self):
-    Polygon.__init__(self)
-  
+                            
   def create_properties(self):
-    
-    self.properties["cell_id"] = self.points[0].properties["cell_id"]
-    self.properties["lac"] = "UnknownLAC"
-
-    for point in self.points:
-      if (point.properties["lac"] != "UnknownLAC"):
-        self.properties["lac"] = point.properties["lac"]
-        break
-        
     # create list of netwerk types and a prevalent network type
     nw_type_dict = {}
     for point in self.points:
@@ -118,14 +106,31 @@ class Cell(Polygon):
     #   self.properties["pnt"] = pnts[0]
     # else:
     #   # take best out of list
-    #   print pnts        
+    #   print pnts  
 
+class Cell(Polygon):
+  def __init__(self):
+    Polygon.__init__(self)
+    self.properties["type"] = "cell"
+  
+  def create_properties(self):
+    Polygon.create_properties(self)
+    self.properties["cell_id"] = self.points[0].properties["cell_id"]
+    self.properties["lac"] = "UnknownLAC"
+
+    for point in self.points:
+      if (point.properties["lac"] != "UnknownLAC"):
+        self.properties["lac"] = point.properties["lac"]
+        break
+      
 class Lac(Polygon):
   def __init__(self):
     Polygon.__init__(self)
+    self.properties["type"] = "lac"
   
   def create_properties(self):
-    self.properties["lac"] = self.points[0].properties["lac"] 
+    Polygon.create_properties(self)
+    self.properties["lac"] = self.points[0].properties["lac"]
   
 ###############
 ##MAIN PROGRAMM

@@ -60,6 +60,26 @@ h1{
   background: #000000;
 }
 
+
+.feature-info-tb {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+.feature-info-tb tr {
+  border: 1px solid #FFFFFF;
+
+}
+
+.feature-info-tb td:first-child { 
+  width: 80px;
+  font-size: 0.8em; 
+  font-style: italic;
+  }
+.feature-info-tb td:nth-child(2) { 
+  width: 120px;
+  }
+
 #map {
   position: absolute;
   bottom: 30px;

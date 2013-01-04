@@ -135,7 +135,7 @@ $(document).ready(function(){
   
   function selectPoint(attr){
     $("#feature-info").append(
-      "<table>"+
+      "<table class='feature-info-tb'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
@@ -161,10 +161,9 @@ $(document).ready(function(){
     return rows
   }
   
-  
   function selectCell(attr){
     $("#feature-info").append(
-      "<table>"+
+      "<table class='feature-info-tb'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
@@ -176,7 +175,7 @@ $(document).ready(function(){
   
   function selectLac(attr){
     $("#feature-info").append(
-      "<table>"+
+      "<table class='feature-info-tb'>"+
       "<tr><td> Type </td><td>"+ attr["type"] +"</td><td>"+
       "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
       "<tr><td> PNT </td><td>"+ attr["pnt"] +"</td><td>"+
@@ -207,6 +206,5 @@ $(document).ready(function(){
   var select = new OpenLayers.Control.SelectFeature(layers, options);
   map.addControl(select);
   select.activate();
-  
   
 });

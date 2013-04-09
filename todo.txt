@@ -1,18 +1,17 @@
-- all jqueryfy!
-- add click out
+all jqueryfy!
+change hover to click (add click out)
+zoom to cursor
 
-layers: 
-points
-cells
-lacs
+go to (lon, lat, zoom level)
 
-show / hide layer
-show / hide after property for cells and lacs
+show (operator=, nw_type=, type=, )
 
-differnt styles for layers
-different select control
+download data
 
 
-- style, style, style
-- change hover to click
+
+
+
+
+
 

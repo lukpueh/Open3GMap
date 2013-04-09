@@ -7,7 +7,6 @@
 // open geojson
 // 
 // append to a layer
-
 var network_dict = {
     "GPRS" : "#FF0000",
     "EDGE" : "#FF7F00",
@@ -76,10 +75,14 @@ $(document).ready(function(){
   //#### VECTORS 
   var geojson_format = new OpenLayers.Format.GeoJSON();
   
+  var filter = new OpenLayers.Filter.Spatial( {type: OpenLayers.Filter.Spatial.BBOX});
+  
   var points_layer = new OpenLayers.Layer.Vector("Points",{
+    filter: [new OpenLayers.Strategy.Filter({filter: filter})],
     styleMap: point_style_map
   }); 
-  points_layer.setVisibility(0);
+  
+  console.log(points_layer);
   
   var cells_layer = new OpenLayers.Layer.Vector("Cells",{
     styleMap: polygon_style_map
@@ -87,14 +90,30 @@ $(document).ready(function(){
   var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
     styleMap: polygon_style_map
   });
+  points_layer.setVisibility(0);
+  cells_layer.setVisibility(0);
+  lacs_layer.setVisibility(0);
 
   var layers = [points_layer, cells_layer, lacs_layer];
   map.addLayers(layers);
   
   var file_name = "data/points.json";
+  var start = new Date().getSeconds();
+
   $.get(file_name, function(data,status) {
     points_layer.addFeatures(geojson_format.read(data));
+    for(var i=0; i < data.features.length; i++){
+      var x = 0;
+      if (data.features[i].lon)
+        x++;
+      }
+    var end = new Date().getSeconds(); 
+    console.log(start);
+    console.log(end);
+    console.log(end-start);
   });
+  
+
   file_name = "data/cells.json";
   $.get(file_name, function(data,status) {
     cells_layer.addFeatures(geojson_format.read(data));
@@ -112,32 +131,49 @@ $(document).ready(function(){
   // }
   // 
   // $(document).on('change', '.show_nw', function(e) {
-  //   var features = cells_layer.features;
-  //   for (var i = 0; i < features.length; i++) {
-  //     if (this.value == features[i].attributes.pnt) {
-  //       if (features[i].style == null)
-  //         features[i].style = { display : 'none' };
-  //       else
-  //         features[i].style = null;
-  //     }
-  //   }
-  //   cells_layer.redraw();
+  //   var args = eval(e.target.value);
+  //   console.log(args[0]);
+  //   // var features = args[1].features;
+  //   // for (var i = 0; i < features.length; i++) {
+  //   //   if (this.value == features[i].attributes.pnt) {
+  //   //     if (features[i].style == null)
+  //   //       features[i].style = { display : 'none' };
+  //   //     else
+  //   //       features[i].style = null;
+  //   //   }
+  //   // }
+  //   // cells_layer.redraw();
   // });
-  
+  // 
   $(document).on('change', '.show_layer', function(e) {
     var layer =  eval(e.target.value);
     layer.getVisibility() ? layer.setVisibility(0) : layer.setVisibility(1);
   });
   
-  $('#controls').append(
-    "<table class='sidebar-table'>"+
-      "<tr><td> Points </td>" +
-      "<td><input type='checkbox' class='show_layer' value='points_layer'></td></tr>"+
-      "<tr><td> Cells </td>" +
-      "<td><input type='checkbox' class='show_layer' checked='checked' value='cells_layer'></td></tr>"+
-      "<tr><td> Lacs </td>" +
-      "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>"+
-    "</table>");
+  var sidebar_table = "<table class='sidebar-table'>";
+  
+  
+  sidebar_table += "<tr><td></td><td>Points</td><td>Cells</td><td>Lacs</td></tr>";
+  sidebar_table += "<tr>";
+  sidebar_table += "<td>all</td>";
+  sidebar_table += "<td><input type='checkbox' class='show_layer' value='points_layer'></td>";
+  sidebar_table += "<td><input type='checkbox' class='show_layer' checked='checked' value='cells_layer'></td>";
+  sidebar_table += "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td>";
+  sidebar_table += "</tr>";
+      
+  for(var key in network_dict) {
+    sidebar_table += "<tr>";
+    sidebar_table += "<td>"+ key.toLowerCase(); +"</td>";
+    sidebar_table += "<td><input type='checkbox' class='show_nw' checked='checked' value='[\'"+key+"\', points_layer]'></td>";
+    sidebar_table += "<td><input type='checkbox' class='show_nw' checked='checked' value='[\'"+key+"\', cells_layer]'></td>";
+    sidebar_table += "<td><input type='checkbox' class='show_nw' checked='checked' value='l\'"+key+"\', lacs_layer'></td>";
+    sidebar_table += "</tr>";
+  }
+  sidebar_table += "</table>"
+  
+  $('#controls').append(sidebar_table);
+
+ 
    
   
   //### HOMEBUTTON

@@ -1,0 +1,303 @@
+from django.db import models
+from datetime import datetime
+  
+def value_none(value):
+  '''checks if a value is given or n/a 
+  returns None if n/a
+  returns the value if given
+  '''
+  return value if not value == "n/a" else None
+
+def normalize_privacy_level(value):
+  if value == "NO":
+    return 1
+  if value == "LOW":
+    return 2
+  if value == "MED":
+    return 3
+  if value == "HIGH":
+    return 4
+  if value == "FULL":
+    return 5
+  return value
+  
+
+class UploadIp(models.Model):
+  save_timestamp = models.DateTimeField()
+  ip             = models.CharField(max_length=16, null=True)
+  
+  
+class Sensor(models.Model):
+  capture_timestamp = models.DateTimeField(null=True)
+  save_timestamp    = models.DateTimeField()
+  privacy_level     = models.IntegerField(max_length=2)
+  
+  def assign_record(self, save_ts, record):
+    self.save_timestamp      = save_ts
+    if (value_none(record['timestamp']) != None):
+      self.capture_timestamp = datetime.fromtimestamp(float(record['timestamp']) / 1000.0)  
+    self.privacy_level       = normalize_privacy_level(record['privacy-level'])
+  
+  class Meta:
+    abstract = True
+
+class BatterySensor(Sensor):
+  charged      = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+  power_source = models.CharField(max_length=16, null=True)
+  battery_type = models.CharField(max_length=16, null=True)
+  temperature  = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+  voltage      = models.DecimalField(max_digits=12, decimal_places=4, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(BatterySensor, self).assign_record(save_ts, record)
+    self.charged      = value_none(record['charged'])
+    self.power_source = value_none(record['power source'])
+    self.battery_type = value_none(record['battery type'])
+    self.temperature  = value_none(record['temperature'])
+    self.voltage      = value_none(record['voltage'])
+
+class DeviceInfoSensor(Sensor):
+  available_memory = models.IntegerField(max_length=8, null=True)
+  cpu_usage        = models.DecimalField(max_digits=18, decimal_places=6, null=True)
+  low_memory_th    = models.IntegerField(max_length=4, null=True)    #Low memory treshold
+  model            = models.CharField(max_length=16, null=True)
+  vendor           = models.CharField(max_length=16, null=True)
+  tac              = models.IntegerField(max_length=8, null=True)
+  total_memory     = models.IntegerField(max_length=8, null=True)
+
+  def assign_record(self, save_ts, record):
+    super(DeviceInfoSensor, self).assign_record(save_ts, record)
+    self.available_memory = value_none(record['available memory'])
+    self.cpu_usage        = value_none(record['CPU usage'])
+    self.low_memory_th    = value_none(record['low memory threshold'])
+    self.model            = value_none(record['model'])
+    self.vendor           = value_none(record['vendor'])
+    self.tac              = value_none(record['TAC'])
+    self.total_memory     = value_none(record['total memory'])
+
+class LocationSensor(Sensor):
+  accuracy  = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+  altitude  = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+  latitude  = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+  longitude = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+  speed     = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+    
+  def assign_record(self, save_ts, record):
+    super(LocationSensor, self).assign_record(save_ts, record)
+    self.accuracy  = value_none(record['accuracy'])
+    self.altitude  = value_none(record['altitude'])
+    self.latitude  = value_none(record['latitude'])
+    self.longitude = value_none(record['longitude'])
+    self.speed     = value_none(record['speed'])
+    
+  class Meta:
+    abstract = True
+    
+class GPSLocationSensor(LocationSensor):
+  satellites = models.IntegerField(max_length=12, null=True)
+  bearing    = models.DecimalField(max_digits=32, decimal_places=12, null=True)
+  address    = models.CharField(max_length=256, null=True)
+
+  
+  def assign_record(self, save_ts, record):
+    super(GPSLocationSensor, self).assign_record(save_ts, record)
+    self.satellites = value_none(record['satellites'])
+    self.bearing    = value_none(record['bearing'])
+    self.address    = value_none(record['address'])
+    
+    
+class NetworkLocationSensor(LocationSensor):
+  address   = models.CharField(max_length=256, null=True)
+
+  def assign_record(self, save_ts, record):
+    super(NetworkLocationSensor, self).assign_record(save_ts, record)
+    self.address   = value_none(record['address'])
+    
+  
+class RadioSensor(LocationSensor):
+  cell_id     = models.IntegerField(max_length=16, null=True)
+  lac         = models.IntegerField(max_length=12, null=True)
+  mcc         = models.IntegerField(max_length=12, null=True)
+  mnc         = models.IntegerField(max_length=12, null=True)
+  nw_type     = models.CharField(max_length=16, null=True)
+  operator    = models.CharField(max_length=28, null=True)
+  roaming     = models.NullBooleanField()
+  radio_state = models.CharField(max_length=64, null=True)
+  rssi        = models.DecimalField(max_digits=32, decimal_places=12, null=True)
+  subscriber  = models.IntegerField(max_length=24, null=True)
+  satellites  = models.IntegerField(max_length=12, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(RadioSensor, self).assign_record(save_ts, record)
+    self.cell_id     = value_none(record['cell id'])
+    self.lac         = value_none(record['location area code'])
+    self.mcc         = value_none(record['mobile country code'])
+    self.mnc         = value_none(record['mobile network code'])
+    self.nw_type     = value_none(record['network type'])
+    self.operator    = value_none(record['operator'])
+    self.roaming     = value_none(record['roaming'])
+    self.radio_state = value_none(record['radio state'])
+    self.rssi        = value_none(record['received signal strength'])
+    self.subscriber  = value_none(record['subscriber id'])
+    self.satellites  = value_none(record['satellites'])
+    
+    
+class WifiConnectionSensor(Sensor):
+  link_speed       = models.DecimalField(max_digits=56, decimal_places=24, null=True)
+  supplicant_state = models.CharField(max_length=24, null=True)
+  bssid            = models.CharField(max_length=24, null=True)
+  mac              = models.CharField(max_length=24, null=True)
+  device_ip        = models.CharField(max_length=24, null=True)
+  rssi             = models.DecimalField(max_digits=32, decimal_places=12, null=True)
+  ssid_hidden      = models.NullBooleanField()
+  ssid             = models.CharField(max_length=64, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(WifiConnectionSensor, self).assign_record(save_ts, record)
+    self.link_speed       = value_none(record['link speed'])
+    self.supplicant_state = value_none(record['Supplicant State'])
+    self.bssid            = value_none(record['BSSID'])
+    self.mac              = value_none(record['MAC address'])
+    self.device_ip        = value_none(record['device IP'])
+    self.rssi             = value_none(record['received signal strength'])
+    self.ssid_hidden      = value_none(record['SSID hidden'])
+    self.ssid             = value_none(record['SSID'])
+
+
+
+
+
+###################
+###################
+
+
+class SensorPr(models.Model):
+  capture_timestamp = models.CharField(max_length=64, null=True)
+  save_timestamp    = models.DateTimeField()
+  privacy_level     = models.IntegerField(max_length=2)
+  
+  def assign_record(self, save_ts, record):
+    self.save_timestamp    = save_ts
+    self.capture_timestamp = value_none(record['timestamp'])  
+    self.privacy_level     = normalize_privacy_level(record['privacy-level'])
+  
+  class Meta:
+    abstract = True
+
+class BatterySensorPr(SensorPr):
+  charged      = models.CharField(max_length=64, null=True)
+  power_source = models.CharField(max_length=64, null=True)
+  battery_type = models.CharField(max_length=64, null=True)
+  temperature  = models.CharField(max_length=64, null=True)
+  voltage      = models.CharField(max_length=64, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(BatterySensorPr, self).assign_record(save_ts, record)
+    self.charged      = value_none(record['charged'])
+    self.power_source = value_none(record['power source'])
+    self.battery_type = value_none(record['battery type'])
+    self.temperature  = value_none(record['temperature'])
+    self.voltage      = value_none(record['voltage'])
+
+class DeviceInfoSensorPr(SensorPr):
+  available_memory = models.CharField(max_length=64, null=True)
+  cpu_usage        = models.CharField(max_length=64, null=True)
+  low_memory_th    = models.CharField(max_length=64, null=True)
+  model            = models.CharField(max_length=64, null=True)
+  vendor           = models.CharField(max_length=64, null=True)
+  tac              = models.CharField(max_length=64, null=True)
+  total_memory     = models.CharField(max_length=64, null=True)
+
+  def assign_record(self, save_ts, record):
+    super(DeviceInfoSensorPr, self).assign_record(save_ts, record)
+    self.available_memory = value_none(record['available memory'])
+    self.cpu_usage        = value_none(record['CPU usage'])
+    self.low_memory_th    = value_none(record['low memory threshold'])
+    self.model            = value_none(record['model'])
+    self.vendor           = value_none(record['vendor'])
+    self.tac              = value_none(record['TAC'])
+    self.total_memory     = value_none(record['total memory'])
+
+class LocationSensorPr(SensorPr):
+  accuracy  = models.CharField(max_length=64, null=True)
+  altitude  = models.CharField(max_length=64, null=True)
+  latitude  = models.CharField(max_length=64, null=True)
+  longitude = models.CharField(max_length=64, null=True)
+  speed     = models.CharField(max_length=64, null=True)
+    
+  def assign_record(self, save_ts, record):
+    super(LocationSensorPr, self).assign_record(save_ts, record)
+    self.accuracy  = value_none(record['accuracy'])
+    self.altitude  = value_none(record['altitude'])
+    self.latitude  = value_none(record['latitude'])
+    self.longitude = value_none(record['longitude'])
+    self.speed     = value_none(record['speed'])
+    
+  class Meta:
+    abstract = True
+    
+class GPSLocationSensorPr(LocationSensorPr):
+  satellites = models.CharField(max_length=64, null=True)
+  bearing    = models.CharField(max_length=64, null=True)
+  address    = models.CharField(max_length=256, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(GPSLocationSensorPr, self).assign_record(save_ts, record)
+    self.satellites = value_none(record['satellites'])
+    self.bearing    = value_none(record['bearing'])
+    self.address    = value_none(record['address'])
+    
+class NetworkLocationSensorPr(LocationSensorPr):
+  address    = models.CharField(max_length=256, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(NetworkLocationSensorPr, self).assign_record(save_ts, record)
+    self.address   = value_none(record['address'])
+  
+class RadioSensorPr(LocationSensorPr):
+  cell_id     = models.CharField(max_length=64, null=True)
+  lac         = models.CharField(max_length=64, null=True)
+  mcc         = models.CharField(max_length=64, null=True)
+  mnc         = models.CharField(max_length=64, null=True)
+  nw_type     = models.CharField(max_length=64, null=True)
+  operator    = models.CharField(max_length=64, null=True)
+  roaming     = models.CharField(max_length=64, null=True)
+  radio_state = models.CharField(max_length=64, null=True)
+  rssi        = models.CharField(max_length=64, null=True)
+  subscriber  = models.CharField(max_length=64, null=True)
+  satellites  = models.CharField(max_length=64, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(RadioSensorPr, self).assign_record(save_ts, record)
+    self.cell_id      = value_none(record['cell id'])
+    self.lac          = value_none(record['location area code'])
+    self.mcc          = value_none(record['mobile country code'])
+    self.mnc          = value_none(record['mobile network code'])
+    self.nw_type      = value_none(record['network type'])
+    self.operator     = value_none(record['operator'])
+    self.roaming      = value_none(record['roaming'])
+    self.radio_state  = value_none(record['radio state'])
+    self.rssi         = value_none(record['received signal strength'])
+    self.subscriber   = value_none(record['subscriber id'])
+    self.satellites   = value_none(record['satellites'])
+
+class WifiConnectionSensorPr(SensorPr):
+  link_speed       = models.CharField(max_length=64, null=True)
+  supplicant_state = models.CharField(max_length=64, null=True)
+  bssid            = models.CharField(max_length=64, null=True)
+  mac              = models.CharField(max_length=64, null=True)
+  device_ip        = models.CharField(max_length=64, null=True)
+  rssi             = models.CharField(max_length=64, null=True)
+  ssid_hidden      = models.CharField(max_length=64, null=True)
+  ssid             = models.CharField(max_length=64, null=True)
+  
+  def assign_record(self, save_ts, record):
+    super(WifiConnectionSensorPr, self).assign_record(save_ts, record)
+    self.link_speed       = value_none(record['link speed'])
+    self.supplicant_state = value_none(record['Supplicant State'])
+    self.bssid            = value_none(record['BSSID'])
+    self.mac              = value_none(record['MAC address'])
+    self.device_ip        = value_none(record['device IP'])
+    self.rssi             = value_none(record['received signal strength'])
+    self.ssid_hidden      = value_none(record['SSID hidden'])
+    self.ssid             = value_none(record['SSID'])

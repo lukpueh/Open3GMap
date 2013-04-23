@@ -3,13 +3,16 @@ from datetime import datetime
 
 def val(rec, key):
   try:
-    return rec[key]
+    if (rec[key] == 'n/a'):
+      raise
+    else:
+      return rec[key]
   except:
     return None
 
 class UploadIp(models.Model):
   save_timestamp = models.DateTimeField()
-  ip             = models.CharField(max_length=16, null=True)
+  ip             = models.TextField(null=True)
   
   
 class Sensor(models.Model):

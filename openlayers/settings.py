@@ -23,7 +23,7 @@ DATABASES = {
         'USER': 'o3gm_db_user',                      # Not used with sqlite3.
 
         # 'HOST': 'skylla.fc.univie.ac.at',
-        # 'PASSWORD':'test'
+        # 'PASSWORD': 'xxx'
     }
 }
 

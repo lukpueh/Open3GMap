@@ -1,5 +1,6 @@
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import Polygon
+from django.shortcuts import render
 from django.http import HttpResponse
 from o3gm import models
 import json
@@ -16,6 +17,11 @@ point_properties = [ 'mcc', 'mnc' ,  'lac', 'cell_id', 'nw_type', 'rssi',
 cell_properties = [ 'cell_id', 'prevailing_nw_type', 'prevailing_nw_count' ]
 lac_properties = [ 'lac', 'prevailing_nw_type', 'prevailing_nw_count' ]
 
+
+
+def index(request):
+  context = {}
+  return render(request, 'o3gm/index.html', context)
   
 def serve_point_json(request):
   

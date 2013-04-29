@@ -1,0 +1,138 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#page-container {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  position: relative;
+  background: #F1EEE8;
+  overflow: hidden;
+}
+
+#header {
+  position: absolute;
+  height: 60px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+h1{
+  margin: 0 0 0 0;
+  padding: 10px 0 0 10px;
+  float: left;
+  min-width: 200px;
+}
+
+#color-info {
+  padding: 17px 0 0 0;
+}
+
+.canvas-container {
+  margin:  0 0 0 20px;
+  white-space: nowrap;
+}
+
+#sidebar {
+  position: absolute;
+  padding-left: 10px;
+  top: 60px;
+  bottom: 30px;
+  width: 209px;
+  float: left;
+  overflow: auto;
+}
+
+h2 {
+  font-size: 1.1em;
+  font-family: arial;
+  margin: 0 0 0 0;
+}
+
+#sidebar-tg {
+  position: absolute;
+  bottom: 30px;
+  top: 60px;
+  left: 222px;
+  width:10px;
+  right: 0px;
+}
+
+.click-button {
+  margin-top: 5px;
+  width: 200px;
+  border-radius: 5px;
+}
+
+.click {
+  background: #808080;
+  color: #F1EEE8;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+.click:hover {
+  background: #000000;
+}
+
+.sidebar-unit {
+  margin-bottom: 40px;
+  border-top: 1px solid white;
+}
+
+.sidebar-table {
+  margin-top: 10px;
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+.sidebar-table tr {
+  border: 1px solid #FFFFFF;
+
+}
+
+.sidebar-table td:first-child { 
+  width: 80px;
+  font-size: 0.8em; 
+  font-style: italic;
+  }
+.fsidebar-table td:nth-child(2) { 
+  width: 120px;
+  }
+
+#map {
+  position: absolute;
+  bottom: 30px;
+  top: 60px;
+  left: 233px;
+  right: 0px;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+  text-align: right;
+}
+
+.info {
+  position: relative;
+  top: 10px;
+  right: 10px;
+  color: black;
+}
+
+a {text-decoration: none;}
+
+
+.olControlAttribution {
+    font-size: smaller;
+    right: 3px;
+    bottom: 3px;
+    position: absolute;
+    display: block;
+}

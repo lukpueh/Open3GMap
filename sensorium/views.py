@@ -12,7 +12,6 @@ log = logging.getLogger('sensorium')
 def upload_files(request):
   '''
   This function receives a post request, with multiple files.
-  checks user
   checks datatype multipart (json)
   creates a datetime for this upload session
   if a model exits for the file,
@@ -38,6 +37,9 @@ def upload_files(request):
         file_name = os.path.basename(str(file_name))
       except:
         file_name = "default"
+      
+      if (file_handler.size > 10000):
+        log.info("File ", file_name, " to big:", file_handler.size)
         
       json_data = get_valid_json(file_handler)
       
@@ -86,7 +88,9 @@ def save_json_to_model(save_ts, json_file, name):
 
 def get_valid_json(file_handler):
   try:
-    file_str = file_handler.read()
+    file_str = ''
+    for chunk in file_handler.chunks():
+      file_str += chunk
     return json.loads(file_str)
   except Exception, e:
     try:

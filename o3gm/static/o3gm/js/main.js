@@ -63,13 +63,13 @@ $(document).ready(function(){
   $('#controls').append("<div id='get-home' class='click click-button'>to Vienna!</div>");
   $('#get-home').click(setCenter);
 
-  $('#controls').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json_file/' target='_blank'>"
+  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download points</div></a>");
 
-  $('#controls').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json_file/' target='_blank'>"
+  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download cells</div>");
 
-  $('#controls').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json_file/' target='_blank'>"
+  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download lacs</div>");
 
                 
@@ -89,6 +89,24 @@ $(document).ready(function(){
                         "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>" + 
                         "</table>");
 
+  
+  
+  
+  //###
+  //paramter test
+  $('select').change(function() {
+    ct = {
+      nw_type : $('[name=select-nw-type]').val(),
+      operator: $('[name=select-operator]').val()
+    };
+    
+    $.ajax({
+      url: "test/",
+      type: "get",
+      data: ct,
+      datatype: "json"
+    });
+  });
   
 
 });

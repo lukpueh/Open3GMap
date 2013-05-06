@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from o3gm import models
 import json
 
+
 def _convert_to_json(queryset, properties):
   djf = Django.Django(geodjango='geometry', properties=properties)
   geoj = GeoJSON.GeoJSON()
@@ -20,8 +21,16 @@ lac_properties = [ 'lac', 'prevailing_nw_type', 'prevailing_nw_count' ]
 
 
 def index(request):
-  context = {}
+  context = {
+    'nw_types' : [nw_type.encode('ascii', 'replace') for nw_type in models.O3gmPoint.objects.exclude(nw_type__isnull=True).values_list('nw_type', flat=True).distinct()],
+    'operators' : [operator for operator in models.O3gmPoint.objects.exclude(mnc__isnull=True, mcc__isnull=True).values_list('mcc', 'mnc').distinct()]
+  }
+  
   return render(request, 'o3gm/index.html', context)
+  
+  
+def serve_args_request(request):
+  print request
   
 def serve_point_json(request):
   

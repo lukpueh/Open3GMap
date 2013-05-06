@@ -21,10 +21,26 @@
         <h1>Open3G Map</h1>
           <div id="color-info"></div>
       </div>
-      
       <div id="sidebar">
         <div id="controls" class="sidebar-unit"> 
           <h2>Controls</h2>
+          <form>
+            <select name='select-nw-type'>
+                <option value="None"> All </option>
+              {% for nw_type in nw_types %}
+                <option value="{{ nw_type }}"> {{ nw_type }} </option>
+              {% endfor %}
+                <option value="None"> not specified </option>
+            </select>
+            <select name='select-operator'>
+              {% for operator in operators %}
+                <option value="{{ operator }}"> {{ operator.0 }}-{{ operator.1 }} </option>
+              {% endfor %}             
+            </select>
+          </form>
+        </div>
+        <div id="downloads" class="sidebar-unit">
+          <h2>Downloads</h2>
         </div>
         <div id="feature-info-container" class="sidebar-unit">
           <h2>Feature Information</h2>

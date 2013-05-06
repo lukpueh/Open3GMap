@@ -18,7 +18,7 @@ class NetworkLocationSensorAdmin(admin.ModelAdmin):
   list_display = ('save_timestamp', 'capture_timestamp', 'privacy_level', 'accuracy', 'altitude', 'latitude', 'longitude', 'speed', 'address')
 
 class RadioSensorAdmin(admin.ModelAdmin):
-  list_display = ('save_timestamp', 'capture_timestamp', 'privacy_level', 'accuracy', 'altitude', 'latitude', 'longitude', 'speed', 'cell_id', 'lac', 'mcc', 'mnc', 'nw_type', 'operator', 'roaming', 'radio_state', 'rssi', 'subscriber', 'satellites')
+  list_display = ('save_timestamp', 'capture_timestamp', 'privacy_level', 'cell_id', 'lac', 'mcc', 'mnc', 'nw_type', 'operator', 'roaming', 'radio_state', 'rssi', 'subscriber')
 
 class WifiConnectionSensorAdmin(admin.ModelAdmin):
   list_display = ('save_timestamp', 'capture_timestamp', 'privacy_level', 'link_speed', 'supplicant_state', 'bssid', 'mac', 'device_ip', 'rssi', 'ssid_hidden', 'ssid')

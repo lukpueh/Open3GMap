@@ -24,12 +24,12 @@ def upload_files(request):
     try:
       ip = request.META['REMOTE_ADDR']
       upload_ip = models.UploadIp()
-      log.info("File Upload from: " + ip)
+      log.info("File Upload from: " + str(ip))
       upload_ip.save_timestamp = save_ts
       upload_ip.ip = ip
       upload_ip.save()
-    except Exception as err:
-      log.error(str(err))
+    except Exception, e:
+      log.error(str(e))
       
 
     for file_name, file_handler in request.FILES.iteritems():
@@ -38,8 +38,8 @@ def upload_files(request):
       except:
         file_name = "default"
       
-      if (file_handler.size > 10000):
-        log.info("File ", file_name, " to big:", file_handler.size)
+      if (file_handler.size > 10000000):
+        log.info("File '" + str(file_name) + "' to big: " + str(file_handler.size))
         
       json_data = get_valid_json(file_handler)
       
@@ -47,12 +47,12 @@ def upload_files(request):
         try:
           save_json_to_model(save_ts, json_data, file_name)
         except Exception, e:
-          log.exception(e)
+          log.error(str(e))
 
       
     return HttpResponse(status=200)   
     
-  log.info("Wrong request method " + str(request.method))
+  log.info("Wrong request method: " + str(request.method))
   return HttpResponse(status=400)
 
   
@@ -83,7 +83,7 @@ def save_json_to_model(save_ts, json_file, name):
       sensor.save()
     except Exception, e:
       log.error(str(record)) 
-      log.exception(e)
+      log.error(e)
 
 
 def get_valid_json(file_handler):
@@ -95,10 +95,8 @@ def get_valid_json(file_handler):
   except Exception, e:
     try:
       json_data = json.loads(file_str + "]")
-      log.info("sanatized json file")
       return json_data
     except:
-      log.info("could not sanatize file")
       return False
       
     
@@ -110,7 +108,7 @@ def load_json_from_fs(path):
         save_ts = datetime.strptime(fn[:20], '%Y%m%d%H%M%S%f')
         file_name = fn[20:]
       except Exception, e:
-        log.exception(e)
+        log.error(e)
       else:
         json_data = get_valid_json(file_handler)
 
@@ -118,6 +116,6 @@ def load_json_from_fs(path):
           try:
             save_json_to_model(save_ts, json_data, file_name)
           except Exception, e:
-            log.exception(e)
+            log.error(e)
 
         file_handler.close()

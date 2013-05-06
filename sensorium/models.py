@@ -121,7 +121,7 @@ class NetworkLocationSensor(LocationSensor):
     self.address = val(rec, 'address')
     
   
-class RadioSensor(LocationSensor):
+class RadioSensor(Sensor):
   cell_id     = models.TextField(null=True)
   lac         = models.TextField(null=True)
   mcc         = models.TextField(null=True)
@@ -132,7 +132,6 @@ class RadioSensor(LocationSensor):
   radio_state = models.TextField(null=True)
   rssi        = models.TextField(null=True)
   subscriber  = models.TextField(null=True)
-  satellites  = models.TextField(null=True)
   
   def create(self, save_ts, rec):
     super(RadioSensor, self).create(save_ts, rec)
@@ -146,7 +145,6 @@ class RadioSensor(LocationSensor):
     self.radio_state = val(rec, 'radio state')
     self.rssi        = val(rec, 'received signal strength')
     self.subscriber  = val(rec, 'subscriber id')
-    self.satellites  = val(rec, 'satellites')
     
     
 class WifiConnectionSensor(Sensor):

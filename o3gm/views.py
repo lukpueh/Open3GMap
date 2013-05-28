@@ -4,6 +4,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from o3gm import models
 import json
+import os, json, logging
+
+
+log = logging.getLogger('o3gm')
 
 
 def _convert_to_json(queryset, properties):
@@ -29,23 +33,51 @@ def index(request):
   return render(request, 'o3gm/index.html', context)
   
   
-def serve_args_request(request):
-  print request
-  
 def serve_point_json(request):
   
   if (request.method == 'OPTIONS'):
     return HttpResponse(status=200)
 
   if (request.method == 'GET'):
+    
+    qs = models.O3gmPoint.objects.all()
+    
+    # #bounding box
+    # try:
+    #   bbox = request.GET.get('bbox').split(',')
+    #   geom = Polygon.from_bbox(bbox)
+    #   qs   = qs.filter(geometry__contained=geom)
+    # except Exception, e:
+    #   log.error(e)
+      
+    #operator
+    # try:
+    #   mcc, mnc = request.GET.get('operator').split(',')
+    #   qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
+    # except Exception, e:
+    #   log.error(e)
+      
+    #network type 
+    # try:
+    #   nw_type = str(request.GET.get('nw_type'))
+    #   
+    #   if (nw_type == "none"):
+    #     qs = qs.filter(nw_type__isnull=True)
+    #   elif (nw_type == "all" ):
+    #     pass
+    #   else:
+    #     qs = qs.filter(nw_type=nw_type)
+    # except Exception, e:
+    #   log.error(e)
+    
     try:
-      bbox = request.GET.get('bbox').split(',')
-      geom = Polygon.from_bbox(bbox)
-    except:
-      return HttpResponse(status='400')
+      print len(qs)
+      json_data = _convert_to_json(qs, point_properties)
+    except Exception, e:
+      log.error(e)
     else:
-      queryset = models.O3gmPoint.objects.filter(geometry__contained=geom)
-      return HttpResponse(_convert_to_json(queryset, point_properties), content_type='application/json')
+      return HttpResponse(json_data, content_type='application/json')
+      
   return HttpResponse(status='400')
 
 def serve_cell_json(request):

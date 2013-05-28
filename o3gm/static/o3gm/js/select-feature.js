@@ -40,6 +40,7 @@ function selectLac(attr){
 var select_options = {
   clickout: true,
   onSelect: function(feature){
+     console.log(feature);
     $("#feature-info").html("");
     switch (feature.layer.name){
       case "Points":

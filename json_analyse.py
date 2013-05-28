@@ -1,6 +1,6 @@
 import os, json
 
-path = "/Users/topfpflanze/source/openlayers/sensorium/uploaded_files"
+path = "/Users/topfpflanze/source/open3gmap/sensorium/uploaded_files"
 
 f = {
 "BatterySensor.json" :  {},

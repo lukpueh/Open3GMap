@@ -1,3 +1,5 @@
+var points_layer, cells_layer;
+
 $(document).ready(function(){
   
   site();
@@ -18,19 +20,17 @@ $(document).ready(function(){
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
   //The Point Layer is only shown, above zoom level .. (for performance)
-  var points_layer = new OpenLayers.Layer.Vector("Points", {
-     maxScale: 20000,
-     styleMap: point_style_map,
-     strategies: [new OpenLayers.Strategy.BBOX()],
+  points_layer = new OpenLayers.Layer.Vector("Points", {
+    styleMap: point_style_map,
+     strategies: [new OpenLayers.Strategy.Fixed()],
      protocol: new OpenLayers.Protocol.HTTP({
-        // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json/",
+        // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
         url: "http://127.0.0.1:8000/o3gm/point_json/",
         format: new OpenLayers.Format.GeoJSON()
-     }),
-
+     })
   });
 
-  var cells_layer = new OpenLayers.Layer.Vector("Cells", {
+  cells_layer = new OpenLayers.Layer.Vector("Cells", {
      styleMap: polygon_style_map,
      strategies: [new OpenLayers.Strategy.Fixed()],
      protocol: new OpenLayers.Protocol.HTTP({
@@ -62,13 +62,13 @@ $(document).ready(function(){
   //### HOMEBUTTON
   $('#controls').append("<div id='get-home' class='click click-button'>to Vienna!</div>");
   $('#get-home').click(setCenter);
-
+  
   $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download points</div></a>");
-
+  
   $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download cells</div>");
-
+  
   $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download lacs</div>");
 
@@ -89,24 +89,27 @@ $(document).ready(function(){
                         "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>" + 
                         "</table>");
 
-  
-  
-  
-  //###
-  //paramter test
-  $('select').change(function() {
-    ct = {
-      nw_type : $('[name=select-nw-type]').val(),
-      operator: $('[name=select-operator]').val()
-    };
-    
-    $.ajax({
-      url: "test/",
-      type: "get",
-      data: ct,
-      datatype: "json"
-    });
-  });
-  
+
+   
+  // $('select').change(function() {
+  //       OpenLayers.Request.GET({
+  //       url: "http://127.0.0.1:8000/o3gm/point_json/",
+  //       params: {
+  //         nw_type : $('[name=select-nw-type]').val(),
+  //         operator : $('[name=select-operator]').val()
+  //       },
+  //       success: function(request) {
+  //  
+  // 
+  //         points_layer.destroyFeatures(); 
+  //         points_layer.addFeatures(new OpenLayers.Format.GeoJSON().read(request.responseText)); 
+  //         console.log(points_layer);
+  //         points_layer.redraw();
+  //       }
+  //   });
+  // 
+  // 
+  // });
+
 
 });

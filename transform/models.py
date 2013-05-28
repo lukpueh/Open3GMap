@@ -1,9 +1,11 @@
 from django.db import models
 from datetime import datetime
-from o3gm.models import O3gmPoint
+from o3gm.models import O3gmPoint, O3gmCell, O3gmLac
 from sensorium.models import UploadIp, GPSLocationSensor, RadioSensor, DeviceInfoSensor, BatterySensor
 from django.contrib.gis.geos import Point
 import logging
+from itertools import groupby
+from django.contrib.gis.geos import MultiPoint
 
 log = logging.getLogger('transform')
 
@@ -28,26 +30,30 @@ class SensoriumToO3gm(models.Model):
     self.num_points = 0
     
     # Has there been a transformation before
+    gps_location_qs = GPSLocationSensor.objects.all()
+    
     try:
       last_trans = SensoriumToO3gm.objects.latest('save_timestamp')
     except:
-      # If not retrieve all GPS records, which were saved befor this transformation now
-      # with Longitude and Latitude Data 
-      gps_location_qs = GPSLocationSensor.objects.filter(
-                              save_timestamp__lt=self.save_timestamp, privacy_level='1'
-                            ).exclude(longitude__isnull=True, latitude__isnull=True
-                            ).exclude(longitude='n/a', latitude='n/a')
-          
-                            
+      pass               
     else:
-      # Retrieve GPS records, like above but saved after last transformation
-      gps_location_qs = GPSLocationSensor.objects.filter(
-                              save_timestamp__gte=last_trans.save_timestamp, privacy_level='1'
+      # Only retrieve GPS records, saved after last transformation
+      gps_location_qs = gps_location_qs.filter(
+                              save_timestamp__gte=last_trans.save_timestamp
+                            )        
+    finally:
+      # Anyway restrict on privacy_level, and with latitude and longitude specified
+      # Only distinct records, btw satellites seems to be a major distinguishing factor 
+      gps_location_qs = gps_location_qs.filter(
+                              privacy_level='1'
                             ).filter(
                               save_timestamp__lt=self.save_timestamp
                             ).exclude(longitude__isnull=True, latitude__isnull=True
-                            ).exclude(longitude='n/a', latitude='n/a')
-                            
+                            ).exclude(longitude='n/a', latitude='n/a'
+                            ).distinct(
+                            'capture_timestamp', 'save_timestamp',  'accuracy', 'latitude', 'longitude'
+                            )
+
     # Create O3gm point for every GPS record like so: 
     for gps_location in gps_location_qs:
       point = O3gmPoint()
@@ -144,3 +150,85 @@ class SensoriumToO3gm(models.Model):
         self.num_points += 1
         
     self.save()
+
+
+class O3gmPointToO3gmPolygons(models.Model):
+  
+  '''
+  Deletes all cell and lac polygons and newly creates them based on all points.
+  '''
+  
+  save_timestamp = models.DateTimeField()
+  num_lacs = models.IntegerField(max_length=8) 
+  num_cells = models.IntegerField(max_length=8) 
+  
+  def transform(self):
+    self.save_timestamp = datetime.now()
+    self.num_cells = 0
+    self.num_lacs = 0
+    
+    try:
+      O3gmCell.objects.all().delete()
+    except Exception, e:
+      log.error(e)
+    else:
+      self.assign_cells()
+    
+    try:
+      O3gmLac.objects.all().delete()
+    except Exception, e:
+      log.error(e)
+    else:
+      self.assign_lacs()
+  
+    self.save()
+    
+    
+  def assign_cells(self):
+    sorted_points = O3gmPoint.objects.exclude(cell_id='-1').order_by('cell_id')
+    grouped_points = {}
+    for cell_id, points_iterator in groupby(sorted_points, lambda point: point.cell_id):
+  	  grouped_points[cell_id] = list(points_iterator)
+  	
+    for cell_id, points in grouped_points.iteritems():
+      #only consider cells with more than two points in it
+      if (len(points) > 2) and cell_id:
+        try:
+          cell = O3gmCell()
+          cell.cell_id = cell_id
+
+          mp = MultiPoint([ p.geometry for p in points ])
+          cell.save_timestamp = datetime.now()
+          cell.geometry = mp.convex_hull
+          cell.set_prevailing_nw_type()
+          cell.save()
+        except Exception, e:
+      	  log.error(e)
+      	else:
+          self.num_cells += 1
+
+
+  def assign_lacs(self):
+    sorted_points = O3gmPoint.objects.exclude(lac='-1').order_by('lac')
+    grouped_points = {}
+    for lac, points_iterator in groupby(sorted_points, lambda point: point.lac):
+  	  grouped_points[lac] = list(points_iterator)
+  
+    for lac, points in grouped_points.iteritems():
+      #only consider lacs with more than two points in it
+      if (len(points) > 2) and lac:
+        try:
+          lac_cell = O3gmLac()
+          lac_cell.lac = lac
+
+          mp = MultiPoint([ p.geometry for p in points ])
+          lac_cell.save_timestamp = datetime.now()
+          lac_cell.geometry = mp.convex_hull
+          lac_cell.set_prevailing_nw_type()
+          lac_cell.save()
+        except Exception, e:
+      	  log.error(e)
+      	else:
+          self.num_lacs += 1
+
+      	  

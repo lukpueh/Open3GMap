@@ -30,27 +30,29 @@ $(document).ready(function(){
      })
   });
 
-  cells_layer = new OpenLayers.Layer.Vector("Cells", {
-     styleMap: polygon_style_map,
-     strategies: [new OpenLayers.Strategy.Fixed()],
-     protocol: new OpenLayers.Protocol.HTTP({
-        // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
-        url: "http://127.0.0.1:8000/o3gm/cell_json/",
-        format: new OpenLayers.Format.GeoJSON()
-     })
-  });
-  
-  var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
-     styleMap: polygon_style_map,
-     strategies: [new OpenLayers.Strategy.Fixed()],
-     protocol: new OpenLayers.Protocol.HTTP({
-        // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json/",
-        url: "http://127.0.0.1:8000/o3gm/lac_json/",
-        format: new OpenLayers.Format.GeoJSON()
-     })
-  });
+  // cells_layer = new OpenLayers.Layer.Vector("Cells", {
+  //    styleMap: polygon_style_map,
+  //    strategies: [new OpenLayers.Strategy.Fixed()],
+  //    protocol: new OpenLayers.Protocol.HTTP({
+  //       // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
+  //       url: "http://127.0.0.1:8000/o3gm/cell_json/",
+  //       format: new OpenLayers.Format.GeoJSON()
+  //    })
+  // });
+  // 
+  // var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
+  //    styleMap: polygon_style_map,
+  //    strategies: [new OpenLayers.Strategy.Fixed()],
+  //    protocol: new OpenLayers.Protocol.HTTP({
+  //       // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json/",
+  //       url: "http://127.0.0.1:8000/o3gm/lac_json/",
+  //       format: new OpenLayers.Format.GeoJSON()
+  //    })
+  // });
 
-  var layers = [points_layer, cells_layer, lacs_layer];
+  var layers = [points_layer];
+  //var layers = [points_layer, cells_layer, lacs_layer];
+
   map.addLayers(layers);
   
   
@@ -60,34 +62,34 @@ $(document).ready(function(){
   select.activate();
 
   //### HOMEBUTTON
-  $('#controls').append("<div id='get-home' class='click click-button'>to Vienna!</div>");
-  $('#get-home').click(setCenter);
-  
-  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json_file/' target='_blank'>"
-                        +"<div class='click click-button'>download points</div></a>");
-  
-  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json_file/' target='_blank'>"
-                        +"<div class='click click-button'>download cells</div>");
-  
-  $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json_file/' target='_blank'>"
-                        +"<div class='click click-button'>download lacs</div>");
+  // $('#controls').append("<div id='get-home' class='click click-button'>to Vienna!</div>");
+  // $('#get-home').click(setCenter);
+  // 
+  // $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/point_json_file/' target='_blank'>"
+  //                       +"<div class='click click-button'>download points</div></a>");
+  // 
+  // $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json_file/' target='_blank'>"
+  //                       +"<div class='click click-button'>download cells</div>");
+  // 
+  // $('#downloads').append("<a href='https://skylla.fc.univie.ac.at/openlayers/o3gm/lac_json_file/' target='_blank'>"
+  //                       +"<div class='click click-button'>download lacs</div>");
 
                 
                 
   //#### Controls
-  $(document).on('change', '.show_layer', function(e) {
-    var layer = eval(e.target.value);
-    layer.getVisibility() ? layer.setVisibility(0) : layer.setVisibility(1);
-  });
+  // $(document).on('change', '.show_layer', function(e) {
+  //   var layer = eval(e.target.value);
+  //   layer.getVisibility() ? layer.setVisibility(0) : layer.setVisibility(1);
+  // });
   
-  $('#controls').append("<table class='sidebar-table'>" + 
-                        "<tr><td> Points </td>" + 
-                        "<td><input type='checkbox' class='show_layer' checked='checked'  value='points_layer'></td></tr>" + 
-                        "<tr><td> Cells </td>" + 
-                        "<td><input type='checkbox' class='show_layer' checked='checked' value='cells_layer'></td></tr>" + 
-                        "<tr><td> Lacs </td>" + 
-                        "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>" + 
-                        "</table>");
+  // $('#controls').append("<table class='sidebar-table'>" + 
+  //                       "<tr><td> Points </td>" + 
+  //                       "<td><input type='checkbox' class='show_layer' checked='checked'  value='points_layer'></td></tr>" + 
+  //                       "<tr><td> Cells </td>" + 
+  //                       "<td><input type='checkbox' class='show_layer' checked='checked' value='cells_layer'></td></tr>" + 
+  //                       "<tr><td> Lacs </td>" + 
+  //                       "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>" + 
+  //                       "</table>");
 
 
    

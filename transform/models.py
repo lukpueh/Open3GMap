@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from o3gm.models import O3gmPoint, O3gmCell, O3gmLac
 from sensorium.models import UploadIp, GPSLocationSensor, RadioSensor, DeviceInfoSensor, BatterySensor
+from rtr.models import RTRNetztest
 from django.contrib.gis.geos import Point
 import logging
 from itertools import groupby
@@ -9,6 +10,58 @@ from django.contrib.gis.geos import MultiPoint
 
 log = logging.getLogger('transform')
 
+
+class RtrToO3gm(models.Model):
+  
+  save_timestamp = models.DateTimeField()
+  num_points = models.IntegerField(max_length=8) 
+  
+  def transform(self):
+    self.save_timestamp = datetime.now()
+    self.num_points = 0
+            
+    rtr_point_qs = RTRNetztest.objects.exclude(long__isnull=True, lat__isnull=True)
+   
+    for rtr_point in rtr_point_qs:
+      
+      point = O3gmPoint()
+      point.save_timestamp = self.save_timestamp
+    
+      point.capture_timestamp = rtr_point.time
+      
+      try:
+        mcc, mnc = rtr_point.network_mcc_mnc.split("-")
+        print mcc, mnc
+        point.mcc, point.mnc = int(mcc), int(mnc)
+      except Exception, e:
+        print e
+
+      print rtr_point.network_type
+      point.nw_type           = rtr_point.network_type
+      print rtr_point.signal_strength
+      point.rssi              = rtr_point.signal_strength
+      print rtr_point.loc_src
+      point.loc_source        = rtr_point.loc_src
+      print rtr_point.model
+      point.model             = rtr_point.model
+      print rtr_point.ip_anonym 
+      point.ip                = rtr_point.ip_anonym 
+      point.data_source       = "RTR"
+      
+      point.geometry          = Point(float(rtr_point.long), float(rtr_point.lat))
+
+      try:
+        point.save()
+      except Exception, e:
+        log.error(e)
+      else:
+        self.num_points += 1
+    
+    print self.num_points
+    self.save()
+  
+  
+    
 class SensoriumToO3gm(models.Model):
   
   save_timestamp = models.DateTimeField()

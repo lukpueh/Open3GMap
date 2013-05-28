@@ -140,6 +140,7 @@ INSTALLED_APPS = (
     'o3gm',
     'sensorium',
     'transform',
+    'rtr',
     
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

@@ -40,7 +40,8 @@ def serve_point_json(request):
 
   if (request.method == 'GET'):
     
-    qs = models.O3gmPoint.objects.all()
+    #qs = models.O3gmPoint.objects.all()
+    qs = models.O3gmPoint.objects.filter(data_source="RTR").distinct('geometry')
     
     # #bounding box
     # try:

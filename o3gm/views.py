@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from o3gm import models
 import json
 import os, json, logging
+from django.contrib.gis.geos import Point
 
 
 log = logging.getLogger('o3gm')
@@ -40,23 +41,60 @@ def serve_point_json(request):
 
   if (request.method == 'GET'):
     
-    #qs = models.O3gmPoint.objects.all()
+    tmp= models.O3gmPoint.objects.all()
+    tmp= models.O3gmPoint.objects.filter(data_source="RTR").distinct('geometry')
+    qs = models.O3gmPoint.objects.all()
     qs = models.O3gmPoint.objects.filter(data_source="RTR").distinct('geometry')
     
     # #bounding box
-    # try:
-    #   bbox = request.GET.get('bbox').split(',')
-    #   geom = Polygon.from_bbox(bbox)
-    #   qs   = qs.filter(geometry__contained=geom)
-    # except Exception, e:
-    #   log.error(e)
+    try:
+      bbbox = request.GET.get('bbox').split(',')
+      # print bbbox
+      # geom = Polygon.from_bbox(bbbox)
+      # qs   = qs.filter(geometry__contained=geom)
+      #print len (qs)
+    except Exception, e:
+      log.error(e)
       
-    #operator
-    # try:
-    #   mcc, mnc = request.GET.get('operator').split(',')
-    #   qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
-    # except Exception, e:
-    #   log.error(e)
+
+    fact = 10
+    bboxes = []
+    left = float(bbbox[0])
+    bottom = float(bbbox[1])
+    right = float(bbbox[2])
+    top = float(bbbox[3])
+    x_len = (right - left) / fact
+    y_len = (top - bottom) / fact
+    
+    for y in range(0, fact):
+      for x in range(0, fact):
+        bboxes.append({
+          'left': left + x_len * x,
+          'bottom': bottom + y_len * y,
+          'right': left + x_len * (x + 1),
+          'top': bottom + y_len * (y + 1),
+        })
+        
+    qs = []
+    for bb in bboxes:
+      point = models.O3gmPoint()
+      point.geometry = Point(bb['left'], bb['bottom'])
+      qs.append(point)
+    
+    
+    cnt = 0
+    for bb in bboxes:
+      cnt += 1
+      geom = Polygon.from_bbox([ bb['left'], bb['bottom'], bb['right'], bb['top'] ])
+      tmp1   = tmp.filter(geometry__contained=geom)
+      print cnt, "# ", len(tmp1)
+      
+    # operator
+    #     try:
+    #       mcc, mnc = request.GET.get('operator').split(',')
+    #       qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
+    #     except Exception, e:
+    #       log.error(e)
       
     #network type 
     # try:

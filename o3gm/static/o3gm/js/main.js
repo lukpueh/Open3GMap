@@ -22,7 +22,7 @@ $(document).ready(function(){
   //The Point Layer is only shown, above zoom level .. (for performance)
   points_layer = new OpenLayers.Layer.Vector("Points", {
     styleMap: point_style_map,
-     strategies: [new OpenLayers.Strategy.Fixed()],
+     strategies: [new OpenLayers.Strategy.BBOX({ratio: 1})],
      protocol: new OpenLayers.Protocol.HTTP({
         // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
         url: "http://127.0.0.1:8000/o3gm/point_json/",

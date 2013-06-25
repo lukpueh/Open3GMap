@@ -1,4 +1,4 @@
-var points_layer, cells_layer;
+var points_layer, cells_layer, grid_layer;
 
 $(document).ready(function(){
   
@@ -18,27 +18,37 @@ $(document).ready(function(){
   setCenter();
   
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
+  
+  grid_layer = new OpenLayers.Layer.Vector("Grid", {
+     styleMap: grid_style_map,
+      strategies: [new OpenLayers.Strategy.BBOX({ratio: 1})],
+      protocol: new OpenLayers.Protocol.HTTP({
+         // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
+         url: "http://127.0.0.1:8000/o3gm/point_json/",
+         format: new OpenLayers.Format.GeoJSON(),
+      })
+   });
+  
+  // //The Point Layer is only shown, above zoom level .. (for performance)
+  // points_layer = new OpenLayers.Layer.Vector("Points", {
+  //    styleMap: point_style_map,
+  //     strategies: [new OpenLayers.Strategy.BBOX({ratio: 1})],
+  //     protocol: new OpenLayers.Protocol.HTTP({
+  //        // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
+  //        url: "http://127.0.0.1:8000/o3gm/point_json/",
+  //        format: new OpenLayers.Format.GeoJSON(),
+  //     })
+  //  });
 
-  //The Point Layer is only shown, above zoom level .. (for performance)
-  points_layer = new OpenLayers.Layer.Vector("Points", {
-    styleMap: point_style_map,
-     strategies: [new OpenLayers.Strategy.BBOX({ratio: 1})],
+  cells_layer = new OpenLayers.Layer.Vector("Cells", {
+     styleMap: polygon_style_map,
+     strategies: [new OpenLayers.Strategy.Fixed()],
      protocol: new OpenLayers.Protocol.HTTP({
         // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
-        url: "http://127.0.0.1:8000/o3gm/point_json/",
+        url: "http://127.0.0.1:8000/o3gm/cell_json/",
         format: new OpenLayers.Format.GeoJSON()
      })
   });
-
-  // cells_layer = new OpenLayers.Layer.Vector("Cells", {
-  //    styleMap: polygon_style_map,
-  //    strategies: [new OpenLayers.Strategy.Fixed()],
-  //    protocol: new OpenLayers.Protocol.HTTP({
-  //       // url: "https://skylla.fc.univie.ac.at/openlayers/o3gm/cell_json/",
-  //       url: "http://127.0.0.1:8000/o3gm/cell_json/",
-  //       format: new OpenLayers.Format.GeoJSON()
-  //    })
-  // });
   // 
   // var lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
   //    styleMap: polygon_style_map,
@@ -50,7 +60,7 @@ $(document).ready(function(){
   //    })
   // });
 
-  var layers = [points_layer];
+  var layers = [grid_layer];
   //var layers = [points_layer, cells_layer, lacs_layer];
 
   map.addLayers(layers);

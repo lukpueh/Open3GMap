@@ -88,6 +88,7 @@ class LocationSensor(Sensor):
   latitude  = models.TextField(null=True)
   longitude = models.TextField(null=True)
   speed     = models.TextField(null=True)
+  address   = models.TextField(null=True)
     
   def create(self, save_ts, rec):
     super(LocationSensor, self).create(save_ts, rec)
@@ -96,6 +97,7 @@ class LocationSensor(Sensor):
     self.latitude  = val(rec, 'latitude')
     self.longitude = val(rec, 'longitude')
     self.speed     = val(rec, 'speed')
+    self.address   = val(rec, 'address')
     
   class Meta:
     abstract = True
@@ -103,22 +105,18 @@ class LocationSensor(Sensor):
 class GPSLocationSensor(LocationSensor):
   satellites = models.TextField(null=True)
   bearing    = models.TextField(null=True)
-  address    = models.TextField(null=True)
-
   
   def create(self, save_ts, rec):
     super(GPSLocationSensor, self).create(save_ts, rec)
     self.satellites = val(rec, 'satellites')
     self.bearing    = val(rec, 'bearing')
-    self.address    = val(rec, 'address')
+    
     
     
 class NetworkLocationSensor(LocationSensor):
-  address = models.TextField(null=True)
 
   def create(self, save_ts, rec):
     super(NetworkLocationSensor, self).create(save_ts, rec)
-    self.address = val(rec, 'address')
     
   
 class RadioSensor(Sensor):

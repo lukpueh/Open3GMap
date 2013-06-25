@@ -39,14 +39,14 @@ class RtrToO3gm(models.Model):
       print rtr_point.network_type
       point.nw_type           = rtr_point.network_type
       print rtr_point.signal_strength
-      point.rssi              = rtr_point.signal_strength
+      point.rssi              = int(rtr_point.signal_strength)
       print rtr_point.loc_src
       point.loc_source        = rtr_point.loc_src
       print rtr_point.model
       point.model             = rtr_point.model
       print rtr_point.ip_anonym 
       point.ip                = rtr_point.ip_anonym 
-      point.data_source       = "RTR"
+      point.data_source       = "R"
       
       point.geometry          = Point(float(rtr_point.long), float(rtr_point.lat))
 
@@ -155,7 +155,7 @@ class SensoriumToO3gm(models.Model):
         if not point.nw_type and radio_record.nw_type:
           point.nw_type = radio_record.nw_type
         if not point.rssi and radio_record.rssi:
-          point.rssi = radio_record.rssi
+          point.rssi = int(radio_record.rssi)
       
       if not point.mcc or not point.mnc or not point.lac or not point.cell_id or not point.nw_type or not point.rssi:
         continue
@@ -192,8 +192,9 @@ class SensoriumToO3gm(models.Model):
           break
         
         if not point.battery_level and battery_record.charged:
-          point.battery_level = battery_record.charged
-          
+          point.battery_level = int(battery_record.charged)
+      
+      point.data_source       = "S"
       # If point is safed successfully, increment point counter
       try:
         point.save()

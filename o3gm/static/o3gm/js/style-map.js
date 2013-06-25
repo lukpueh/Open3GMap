@@ -1,6 +1,6 @@
 var point_style_map = new OpenLayers.StyleMap({
    "default": new OpenLayers.Style({
-          pointRadius: 8,
+          pointRadius: 3,
           fillColor: "${fill}",
           fillOpacity: 0.8,
           strokeWidth: 0
@@ -30,4 +30,11 @@ var polygon_style_map = new OpenLayers.StyleMap({
         fillOpacity: 1,
         strokeWidth: 1,
     })
+  });
+  
+var grid_style_map = new OpenLayers.StyleMap({
+ "default": new OpenLayers.Style({
+        fillColor: "#FF7274",
+        fillOpacity: 0.4,
+      })
   });

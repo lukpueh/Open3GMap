@@ -39,7 +39,8 @@ def upload_files(request):
         file_name = "default"
       
       if (file_handler.size > 10000000):
-        log.info("File '" + str(file_name) + "' to big: " + str(file_handler.size))
+        log.info("File '" + str(file_name) + "' too big: " + str(file_handler.size))
+        continue
         
       json_data = get_valid_json(file_handler)
       

@@ -21,9 +21,6 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'o3gm_db',                      # Or path to database file if using sqlite3.
         'USER': 'o3gm_db_user',                      # Not used with sqlite3.
-
-        # 'HOST': 'skylla.fc.univie.ac.at',
-        # 'PASSWORD': 'xxx'
     }
 }
 
@@ -130,6 +127,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'django.template',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

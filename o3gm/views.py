@@ -1,4 +1,4 @@
-from vectorformats.Formats import Django, WKT, GeoJSON
+from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import Polygon
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -8,8 +8,9 @@ from django.contrib.gis.geos import Point
 
 log = logging.getLogger('o3gm')
 
-point_properties  = [ 'mcc', 'mnc', 'lac', 'cell_id', 'nw_type', 'rssi',  
-                      'accuracy', 'battery_level', 'tac', 'vendor', 'model', 'ip' ]
+# point_properties  = [ 'mcc', 'mnc', 'lac', 'cell_id', 'nw_type', 'rssi',  
+#                       'accuracy', 'battery_level', 'tac', 'vendor', 'model', 'ip' ]
+point_properties  = [ 'nw_type' ]
 cell_properties   = [ 'cell_id', 'prevailing_nw_type', 'prevailing_nw_count' ]
 lac_properties    = [ 'lac', 'prevailing_nw_type', 'prevailing_nw_count' ]
 
@@ -18,34 +19,34 @@ def _convert_geodjango_to_json(queryset, properties):
   geoj = GeoJSON.GeoJSON()
   return geoj.encode(djf.decode(queryset))
 
-def _gridify_bbox(bbox, fact_v = 20, fact_h = 30):
-  '''
-  Take Bounding Box array and make a grid of it.
-  parameters:
-    bbox [<left-lon>, <bottom-lat>, <right-lon>, <top-lat>]
-  return:
-    array of bboxes
-  '''
-   
-  bboxes = []
-  left   = float(bbox[0])
-  bottom = float(bbox[1])
-  right  = float(bbox[2])
-  top    = float(bbox[3])
-  
-  x_len  = (right - left) / fact_h
-  y_len  = (top - bottom) / fact_v
-  
-  for y in range(0, fact_v):
-    for x in range(0, fact_h):
-      bboxes.append([
-        left + x_len * x,
-        bottom + y_len * y,
-        left + x_len * (x + 1),
-        bottom + y_len * (y + 1)
-      ])
-        
-  return bboxes
+# def _gridify_bbox(bbox, fact_v = 20, fact_h = 30):
+#   '''
+#   Take Bounding Box array and make a grid of it.
+#   parameters:
+#     bbox [<left-lon>, <bottom-lat>, <right-lon>, <top-lat>]
+#   return:
+#     array of bboxes
+#   '''
+#    
+#   bboxes = []
+#   left   = float(bbox[0])
+#   bottom = float(bbox[1])
+#   right  = float(bbox[2])
+#   top    = float(bbox[3])
+#   
+#   x_len  = (right - left) / fact_h
+#   y_len  = (top - bottom) / fact_v
+#   
+#   for y in range(0, fact_v):
+#     for x in range(0, fact_h):
+#       bboxes.append([
+#         left + x_len * x,
+#         bottom + y_len * y,
+#         left + x_len * (x + 1),
+#         bottom + y_len * (y + 1)
+#       ])
+#         
+#   return bboxes
 
 
 def index(request):
@@ -53,9 +54,10 @@ def index(request):
     'nw_types' : [nw_type.encode('ascii', 'replace') for nw_type in models.O3gmPoint.objects.exclude(nw_type__isnull=True).values_list('nw_type', flat=True).distinct()],
     'operators' : [operator for operator in models.O3gmPoint.objects.exclude(mnc__isnull=True, mcc__isnull=True).values_list('mcc', 'mnc').distinct()]
   }
+  return render(request, 'o3gm/base.html', context)
   
-  return render(request, 'o3gm/index.html', context)
-  
+# def data_select(request):
+#   return render
   
 def serve_point_json(request):
   
@@ -64,58 +66,71 @@ def serve_point_json(request):
 
   if (request.method == 'GET'):
     
-    qs = models.O3gmPoint.objects.exclude(data_source="R").distinct('geometry')
+    qs = models.O3gmPoint.objects.distinct('geometry')
     
-    # #bounding box
+    # BOUNDING BOX
     try:
-      bbbox = request.GET.get('bbox').split(',')
-      # qs   = qs.filter(geometry__contained=geom)
+      bbox = request.GET.get('bbox').split(',')
+      print bbox
+      geom = Polygon.from_bbox(bbox)
+      qs    = qs.filter(geometry__contained=geom)
     except Exception, e:
       log.error(e)
       
-    bboxes = _gridify_bbox(bbbox)
-    grid_tuples = []
+    # bboxes = _gridify_bbox(bbbox)
+    # grid_tuples = []
+    # abox = Polygon.from_bbox(bboxes[0])
  
-    for bb in bboxes:
-      geom_bb = Polygon.from_bbox(bb)
-      qs_bb = models.O3gmPoint.objects.filter(geometry__contained=geom_bb)
-      qs_bb_num = len(qs_bb)
-      if (qs_bb_num):
-        grid_tuples.append( geom_bb.json )
+    # for bb in bboxes:
+    #   geom_bb = Polygon.from_bbox(bb)
+    #   qs_bb = models.O3gmPoint.objects.filter(geometry__contained=geom_bb)
+    #   qs_bb_num = len(qs_bb)
+    #   if (qs_bb_num):
+    #     grid_tuples.append( { "geometry": geom_bb.json } )
+      
        
     #     
     #   qs_bbox = models.O3gmPoint.objects.filter(geometry__contained=geom)
     #   qs_bbox_len = len(qs_bbox)
     #   if (qs_bbox_len):
     #     print cnt, "# ", len(qs_bbox)
+    
+    # SELECT DATA SOURCE
+    try:
+      data_source = str(request.GET.get('data_source'))
+      print data_source
+      if (data_source == "R"):
+        qs = qs.filter(data_source="R")
+      else:
+        qs = qs.exclude(data_source="R")
+    except Exception, e:
+      log.error(e)
       
-    # operator
-    #     try:
-    #       mcc, mnc = request.GET.get('operator').split(',')
-    #       qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
-    #     except Exception, e:
-    #       log.error(e)
+    # SELECT OPERATOR
+    try:
+      operator = request.GET.get('operator')
+      print operator
+      if (str(operator) != "all"):
+        mcc, mnc = operator.split(',')
+        qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
+    except Exception, e:
+      log.error(e)
       
-    #network type 
-    # try:
-    #   nw_type = str(request.GET.get('nw_type'))
-    #   
-    #   if (nw_type == "none"):
-    #     qs = qs.filter(nw_type__isnull=True)
-    #   elif (nw_type == "all" ):
-    #     pass
-    #   else:
-    #     qs = qs.filter(nw_type=nw_type)
-    # except Exception, e:
-    #   log.error(e)
+    # SELECT NETWORK TYPE
+    try:
+      nw_type = str(request.GET.get('nw_type'))
+      print nw_type
+      if (nw_type != "all" ):
+        if (nw_type == "none"):
+          qs = qs.filter(nw_type__isnull=True)
+        else:
+          qs = qs.filter(nw_type=nw_type)
+    except Exception, e:
+      log.error(e)
     
     try:
-      #print len(qs)
-      #json_data = _convert_geodjango_to_json(qs, point_properties)
-      # djf = Django.Django(pickled_geometry=True)
-      # djf.decode(bboxes_geom)
-      json_data = grid_tuples
-      print grid_tuples
+      print len(qs)
+      json_data = _convert_geodjango_to_json(qs, point_properties)
     except Exception, e:
       log.error(e)
     else:
@@ -127,7 +142,7 @@ def serve_cell_json(request):
   queryset = models.O3gmCell.objects.all()
   res = _convert_geodjango_to_json(queryset, cell_properties)
   print res 
-  return HttpResponse( content_type='application/json')
+  return HttpResponse(res, content_type='application/json')
 
 def serve_lac_json(request):
   queryset = models.O3gmLac.objects.all()

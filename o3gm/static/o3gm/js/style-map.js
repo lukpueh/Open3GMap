@@ -1,6 +1,6 @@
 var point_style_map = new OpenLayers.StyleMap({
    "default": new OpenLayers.Style({
-          pointRadius: 3,
+          pointRadius: 5,
           fillColor: "${fill}",
           fillOpacity: 0.8,
           strokeWidth: 0

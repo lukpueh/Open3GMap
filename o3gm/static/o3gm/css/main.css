@@ -78,6 +78,11 @@ h2 {
   background: #000000;
 }
 
+button[disabled=disabled] {
+  background: #000000;
+  color: #000000;
+}
+
 .sidebar-unit {
   margin-bottom: 40px;
   border-top: 1px solid white;

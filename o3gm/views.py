@@ -10,7 +10,7 @@ log = logging.getLogger('o3gm')
 
 # point_properties  = [ 'mcc', 'mnc', 'lac', 'cell_id', 'nw_type', 'rssi',  
 #                       'accuracy', 'battery_level', 'tac', 'vendor', 'model', 'ip' ]
-point_properties  = [ 'nw_type' ]
+point_properties  = [ 'id', 'nw_type' ]
 cell_properties   = [ 'cell_id', 'prevailing_nw_type', 'prevailing_nw_count' ]
 lac_properties    = [ 'lac', 'prevailing_nw_type', 'prevailing_nw_count' ]
 
@@ -79,6 +79,11 @@ def index(request):
 def data_options(request):
   data_src = request.GET.get('data_src')
   return render(request, 'o3gm/options.html', _data_options_context(data_src))
+  
+def serve_point_properties(request):
+  point_id = request.GET.get('point_id')
+  context = { 'point' : models.O3gmPoint.objects.filter(id=point_id)[0] }
+  return render(request, 'o3gm/point_properties.html', context)
   
 def serve_point_json(request):
   

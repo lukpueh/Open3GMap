@@ -1,20 +1,9 @@
 //### SELECT
   
-function selectPoint(attr){
-  $("#feature-info").append(
-    "<table class='sidebar-table'>"+
-    "<tr><td> Cell ID</td><td>"+ attr["cell_id"] +"</td><td>"+
-    "<tr><td> Lac ID </td><td>"+ attr["lac"] +"</td><td>"+
-    "<tr><td> Tac ID </td><td>"+ attr["tac"] +"</td><td>"+     
-    "<tr><td> Operator  </td><td>"+ attr["mcc"]+"-"+attr["mnc"] +"</td><td>"+
-    "<tr><td> IP </td><td>"+ attr["ip"] +"</td><td>"+
-    "<tr><td> RSSI  </td><td>"+ attr["rssi"] +"</td><td>"+
-    "<tr><td> GPS accuracy </td><td>"+ attr["accuracy"] +"</td><td>"+
-    "<tr><td> Vendor </td><td>"+ attr["vendor"] +"</td><td>"+
-    "<tr><td> Model </td><td>"+ attr["model"] +"</td><td>"+
-    "<tr><td> Battery  </td><td>"+ attr["battery_level"] +"</td><td>"+
-    "</table>"
-    );
+function selectPoint(id){
+  $.get('/o3gm/point_properties/', { point_id: id}, function(data){
+    $("#feature-info").append(data);
+  });
 }
 
 function selectCell(attr){
@@ -40,11 +29,10 @@ function selectLac(attr){
 var select_options = {
   clickout: true,
   onSelect: function(feature){
-     console.log(feature);
     $("#feature-info").html("");
     switch (feature.layer.name){
       case "Points":
-        selectPoint(feature.attributes);
+        selectPoint(feature.attributes.id);
         break;
       case "Cells":
         selectCell(feature.attributes);

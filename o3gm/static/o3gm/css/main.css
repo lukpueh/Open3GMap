@@ -36,6 +36,7 @@ h1{
   white-space: nowrap;
 }
 
+
 #sidebar {
   position: absolute;
   padding-left: 10px;
@@ -74,8 +75,15 @@ h2 {
   font-size: 0.8em;
 }
 
+.nav-item.active,
 .click:hover {
   background: #000000;
+}
+
+
+.nav-item {
+  padding: 10px;
+  margin: 2px;
 }
 
 button[disabled=disabled] {

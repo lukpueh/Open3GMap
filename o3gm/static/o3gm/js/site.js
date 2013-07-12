@@ -2,6 +2,18 @@
 
 function site(){
   
+  //navigation
+  $('.nav-item').click(function(evt){
+    $('.nav-target').hide();
+    $('.nav-item').removeClass("active");
+    
+    $('#' + evt.target.id).addClass("active");
+    $('#' + evt.target.getAttribute("data-target")).show();
+
+    
+  });
+  
+  
   //Sidebar Toggle
   $('#sidebar-tg').toggle(
     function() {

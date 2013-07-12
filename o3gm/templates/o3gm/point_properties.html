@@ -1,0 +1,48 @@
+<table class='sidebar-table'>
+  {% if point.capture_timestamp %} 
+    <tr><td> Capture TS</td><td>{{ point.capture_timestamp }}</td><td> 
+  {% endif %}
+  {% if point.nw_type %} 
+    <tr><td> Network type</td><td>{{ point.nw_type }}</td><td>
+  {% endif %}
+  {% if point.cell_id %} 
+    <tr><td> Cell ID</td><td>{{ point.cell_id }}</td><td>
+  {% endif %}
+  {% if point.lac and point.lac != "UnknownLAC" %} 
+    <tr><td> Lac ID </td><td>{{ point.lac }}</td><td>
+  {% endif %}
+  {% if point.tac %} 
+    <tr><td> Tac ID </td><td>{{ point.tac }}</td><td>
+  {% endif %}
+  {% if point.mcc and point.mnc %} 
+    <tr><td> Operator  </td><td>{{ point.mcc }}-{{ point.mnc }}</td><td>
+  {% endif %}
+  {% if point.ip and point.ip != "UnknownIP" %} 
+    <tr><td> IP </td><td>{{ point.ip }}</td><td>
+  {% endif %}
+  {% if point.rssi %} 
+    <tr><td> RSSI  </td><td>{{ point.rssi }}</td><td>
+  {% endif %}
+  {% if point.accuracy %} 
+    <tr><td> GPS accuracy </td><td>{{ point.accuracy|floatformat:2 }}</td><td>
+  {% endif %}
+  {% if point.alt %} 
+    <tr><td> GPS altitude </td><td>{{ point.alt|floatformat:2 }}</td><td>
+  {% endif %}
+    <tr><td> GPS longitude </td><td>{{ point.geometry.x }}</td><td>
+    <tr><td> GPS latitude </td><td>{{ point.geometry.y }}</td><td>
+  {% if point.vendor %} 
+    <tr><td> Vendor </td><td>{{ point.vendor }}</td><td>
+  {% endif %}
+  {% if point.model %} 
+    <tr><td> Model </td><td>{{ point.model }}</td><td>
+  {% endif %}
+  {% if point.battery_level %} 
+    <tr><td> Battery  </td><td>{{ point.battery_level }}</td><td>
+  {% endif %}
+</table>
+
+
+
+
+

@@ -1,0 +1,77 @@
+<!DOCTYPE>
+
+{% load staticfiles %}
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Open3G Map</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'o3gm/css/main.css' %}" />  
+    <script src="{% static 'o3gm/js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static 'o3gm/js/openlayers/OpenLayers.js' %}"></script>
+    <script src="{% static 'o3gm/js/network-dict.js' %}"></script>
+    <script src="{% static 'o3gm/js/site.js' %}"></script>
+    <script src="{% static 'o3gm/js/style-map.js' %}"></script>
+    <script src="{% static 'o3gm/js/select-feature.js' %}"></script>
+    <script src="{% static 'o3gm/js/main.js' %}"></script>
+
+  </head>
+  <body>
+    <div id="page-container">
+      <div id="header">
+        <h1>Open3G Map</h1>
+          <div id="color-info"></div>
+      </div>
+      <div id="sidebar">
+        <div id="nav-bar">
+          <span class="nav-item click" id="nav-controls" data-target="controls">controls</span>
+          <span class="nav-item click" id="nav-features" data-target="feature-info-container">features</span>
+          <span class="nav-item click" id="nav-links" data-target="links">links</span>
+        </div>
+        <br/>
+        <div id="controls" class="sidebar-unit nav-target"> 
+          <h2>Controls</h2>
+          <form>
+            Data Source
+            <select name='select-data'>
+                <option value="S"> Sensorium </option>
+                <option value="R"> RTR </option>
+            </select>
+            <div id="dataOptions">
+            {% include "o3gm/options.html" %}
+            </div>
+          </form>
+          <div id="feedback"></div>
+          <button id="submit" class="click click-button">show Points</button>
+
+        </div>
+        <div id="links" class="sidebar-unit nav-target" style="display:none">
+          <h2>Links</h2>
+        </div>
+        <div id="feature-info-container" class="sidebar-unit nav-target" style="display:none">
+          <h2>Feature Information</h2>
+          <div style="font-style:italic">
+            click on a feature
+          </div>
+          <div id="feature-info"></div>
+        </div>
+      </div>
+      <div id="sidebar-tg" class="click" title="Toggle Sidebar"></div>
+      <div id="map"></div>
+      <div id="footer">
+        <a class="info" target="blank" 
+          href="mailto:lukas.puehringer[you-know]univie.ac.at">
+          L. Pühringer</a>
+        <a class="info" target="blank"
+         href="mailto:albert.rafetseder[you-know]univie.ac.at">
+          A. Rafetseder</a>
+        <a class="info" target="blank" 
+          href="mailto:florian.metzger[you-know]univie.ac.at">
+          F. Metzger</a> 
+        <a class="info" target="blank" 
+          href="http://www.univie.ac.at">
+          University of Vienna</a><br>
+      </div>
+    </div>
+
+  </body>
+</html>

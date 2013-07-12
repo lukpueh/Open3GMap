@@ -1,0 +1,17 @@
+<br/>
+Net Type
+<select name='select-nw-type'>
+    <option value="all"> All </option>
+    {% for nw_type in nw_types %}
+    <option value="{{ nw_type }}"> {{ nw_type }} </option>
+    {% endfor %}
+    <option value="none"> not specified </option>
+</select>
+<br/>
+Operator
+<select name='select-operator'>
+    <option value="all"> All </option>
+    {% for operator in operators %}
+    <option value="{{ operator.0 }},{{ operator.1 }}"> {{ operator.0 }}-{{ operator.1 }} </option>
+    {% endfor %}             
+</select>

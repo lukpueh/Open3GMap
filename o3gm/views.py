@@ -48,16 +48,37 @@ def _convert_geodjango_to_json(queryset, properties):
 #         
 #   return bboxes
 
+def _data_options_context(data_src):
+  
+  qs_nw_types = models.O3gmPoint.objects.all()
+  qs_operators = models.O3gmPoint.objects.all()
+  
+  if (data_src == "S"):
+    qs_nw_types = qs_nw_types.exclude(data_source='R')
+    qs_operators = qs_operators.exclude(data_source='R')
+  elif (data_src == "R"): 
+    qs_nw_types = qs_nw_types.filter(data_source='R')
+    qs_operators = qs_operators.filter(data_source='R')  
+  
+  
+  qs_nw_types = qs_nw_types.exclude(nw_type__isnull=True
+                           ).values_list('nw_type', flat=True
+                           ).distinct()
+  qs_operators =  qs_operators.exclude(mnc__isnull=True, mcc__isnull=True
+                           ).values_list('mcc', 'mnc'
+                           ).order_by('mcc').distinct()
+                            
+  return {
+    'nw_types' : [nw_type.encode('ascii', 'replace') for nw_type in qs_nw_types],
+    'operators' : [operator for operator in qs_operators]
+  }
 
 def index(request):
-  context = {
-    'nw_types' : [nw_type.encode('ascii', 'replace') for nw_type in models.O3gmPoint.objects.exclude(nw_type__isnull=True).values_list('nw_type', flat=True).distinct()],
-    'operators' : [operator for operator in models.O3gmPoint.objects.exclude(mnc__isnull=True, mcc__isnull=True).values_list('mcc', 'mnc').distinct()]
-  }
-  return render(request, 'o3gm/base.html', context)
+  return render(request, 'o3gm/index.html', _data_options_context("S"))
   
-# def data_select(request):
-#   return render
+def data_options(request):
+  data_src = request.GET.get('data_src')
+  return render(request, 'o3gm/options.html', _data_options_context(data_src))
   
 def serve_point_json(request):
   
@@ -112,7 +133,7 @@ def serve_point_json(request):
       print operator
       if (str(operator) != "all"):
         mcc, mnc = operator.split(',')
-        qs = qs.filter(mcc=int(mnc), mnc=int(mcc))
+        qs = qs.filter(mcc=int(mcc), mnc=int(mnc))
     except Exception, e:
       log.error(e)
       

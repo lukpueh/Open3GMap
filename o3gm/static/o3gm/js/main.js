@@ -69,6 +69,7 @@ $(document).ready(function(){
   $('#links').append("<div id='get-home' class='click click-button'>to Vienna!</div>");
   $('#get-home').click(setCenter);
   
+  //### DOWNLOAD
   $('#links').append("<a href='/o3gm/point_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download points</div></a>");
   
@@ -77,8 +78,7 @@ $(document).ready(function(){
   
   $('#links').append("<a href='/o3gm/lac_json_file/' target='_blank'>"
                         +"<div class='click click-button'>download lacs</div></a>");
-
-                
+                      
                 
   //#### Controls
   // $(document).on('change', '.show_layer', function(e) {
@@ -95,20 +95,15 @@ $(document).ready(function(){
   //                       "<td><input type='checkbox' class='show_layer' checked='checked' value='lacs_layer'></td></tr>" + 
   //                       "</table>");
 
+    //### DATA OPTIONS
   
-    // $('[name=select-data]').change(function(evt) {
-    //     var src = $(this).val();
-    //     $.ajax({
-    //         type:"GET",
-    //         url: "/o3gm/data_select",
-    //         data: { 
-    //             data_source:  src,
-    //         },
-    //         success: function() {
-    //            console.log ("juhuu") ;
-    //         }
-    //     })
-    // });
+    $('[name=select-data]').change(function(evt) {
+        var src = $(this).val();
+        $.get('/o3gm/data_options/', {data_src: src}, function(data){
+          $('#dataOptions').html(data);
+          });
+        
+    });
    
   $('#submit').click(function() {
         $("#submit").attr("disabled", "disabled");
@@ -132,7 +127,8 @@ $(document).ready(function(){
             var features = format.read(request.responseText);
             points_layer.addFeatures( features ); 
             points_layer.redraw();
-             $("#submit").removeAttr("disabled");
+            $("#feedback").html("retrieved points: " + features.length);
+            $("#submit").removeAttr("disabled");
           }
       });
     

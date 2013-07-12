@@ -5,8 +5,9 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 # Django settings for open3gmap project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = True
 
+ALLOWED_HOSTS = ['o3gm.cs.univie.ac.at']
 
 #GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so'
 
@@ -63,12 +64,11 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/var/www/o3gm/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/open3gmap/static/'
-#STATIC_URL = 'https://skylla.fc.univie.ac.at/~puehringer/static/'
+STATIC_URL = '/static/'
 
 
 # Additional locations of static files
@@ -127,7 +127,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.template',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -199,5 +198,3 @@ LOGGING = {
         },        
     }
 }
-
-

@@ -74,18 +74,15 @@ h2 {
   font-size: 0.8em;
 }
 
-.nav-item.active,
-.click:hover {
-  background: #000000;
-}
 
 #nav-bar {
   overflow: hidden;
 }
 
-#nav-bar ul {
+#nav-bar ul{
     padding: 0;
     margin: 0;
+    list-style-type: none;
 }
 
 .nav-item {    
@@ -94,6 +91,11 @@ h2 {
   float: left;
   margin: 1px;
   padding: 4px;  
+}
+
+.nav-item.active,
+.click:hover {
+  background: #000000;
 }
 
 button[disabled=disabled] {

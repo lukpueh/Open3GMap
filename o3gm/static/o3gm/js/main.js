@@ -12,6 +12,7 @@ $(document).ready(function(){
      controls: [
         new OpenLayers.Control.KeyboardDefaults(),
         new OpenLayers.Control.PanZoomBar(),
+        new OpenLayers.Control.Navigation(),
     ]
   };
   var map_lon = 16.355, map_lat = 48.22, map_zoom = 12;
@@ -24,13 +25,6 @@ $(document).ready(function(){
     map.setCenter(point.transform(espg_4326, map.getProjectionObject()), map_zoom);
   }  
   setCenter();
-  
-  mapOpt = {
-     controls: [
-        new OpenLayers.Control.KeyboardDefaults(),
-        new OpenLayers.Control.PanZoomBar(),
-    ]
-  }
 
 
   //The Point Layer is only shown, above zoom level .. (for performance)

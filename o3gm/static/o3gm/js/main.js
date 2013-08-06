@@ -1,14 +1,21 @@
 var points_layer, cells_layer, lacs_layer, grid_layer;
 var espg_4326 = new OpenLayers.Projection("EPSG:4326");
 var espg_900913 = new OpenLayers.Projection("EPSG:900913");
+var map;
 
 $(document).ready(function(){
   
   site();
   
   // //#### MAP
+  mapOpt = {
+     controls: [
+        new OpenLayers.Control.KeyboardDefaults(),
+        new OpenLayers.Control.PanZoomBar(),
+    ]
+  };
   var map_lon = 16.355, map_lat = 48.22, map_zoom = 12;
-  var map = new OpenLayers.Map('map');
+  map = new OpenLayers.Map('map', mapOpt);
   var layer_mapnik = new OpenLayers.Layer.OSM("OpenLayers Mapnik");
   map.addLayer(layer_mapnik);
   
@@ -18,9 +25,14 @@ $(document).ready(function(){
   }  
   setCenter();
   
-  map.addControl(new OpenLayers.Control.KeyboardDefaults());
+  mapOpt = {
+     controls: [
+        new OpenLayers.Control.KeyboardDefaults(),
+        new OpenLayers.Control.PanZoomBar(),
+    ]
+  }
 
-  
+
   //The Point Layer is only shown, above zoom level .. (for performance)
   points_layer = new OpenLayers.Layer.Vector("Points", {
      styleMap: point_style_map,

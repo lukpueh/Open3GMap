@@ -30,6 +30,9 @@ var select_options = {
   clickout: true,
   onSelect: function(feature){
     $("#feature-info").html("");
+    //show feature sidebar item
+    $('.nav-item:eq(1)').trigger("click");
+    
     switch (feature.layer.name){
       case "Points":
         selectPoint(feature.attributes.id);

@@ -7,7 +7,7 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['o3gm.cs.univie.ac.at']
+ALLOWED_HOSTS = ['o3gm.cs.univie.ac.at', '131.130.121.99']
 
 #GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so'
 

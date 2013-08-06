@@ -9,8 +9,6 @@ function site(){
     
     $('#' + evt.target.id).addClass("active");
     $('#' + evt.target.getAttribute("data-target")).show();
-
-    
   });
   
   

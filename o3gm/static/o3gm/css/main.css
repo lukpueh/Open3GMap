@@ -8,7 +8,6 @@ html, body {
   width: 100%;
   height: 100%;
   margin: auto;
-  position: relative;
   background: #F1EEE8;
   overflow: hidden;
 }
@@ -80,10 +79,21 @@ h2 {
   background: #000000;
 }
 
+#nav-bar {
+  overflow: hidden;
+}
 
-.nav-item {
-  padding: 10px;
-  margin: 2px;
+#nav-bar ul {
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {    
+  border-radius: 10px 10px 0 0;
+  width: 50px;
+  float: left;
+  margin: 1px;
+  padding: 4px;  
 }
 
 button[disabled=disabled] {
@@ -93,6 +103,7 @@ button[disabled=disabled] {
 
 .sidebar-unit {
   margin-bottom: 40px;
+  padding-top: 5px;
   border-top: 1px solid white;
 }
 

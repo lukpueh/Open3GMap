@@ -103,6 +103,11 @@ button[disabled=disabled] {
   color: #000000;
 }
 
+.feedback {
+  padding-top: 10px;
+  padding-right: 10px;
+}
+
 .sidebar-unit {
   margin-bottom: 40px;
   padding-top: 5px;

@@ -8,5 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sensorium/', include('sensorium.urls')),
-    url(r'^o3gm/', include('o3gm.urls'))
+    url(r'^o3gm/', include('o3gm.urls')),
+    url(r'^', include('o3gm.urls'))
+
 )

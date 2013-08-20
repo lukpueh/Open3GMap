@@ -72,11 +72,11 @@ class SensoriumToO3gm(models.Model):
     Transforms Sensorium Sensor data to O3gm Points.
     Assumes that Sensorium Sensors with same save_timestamp belong to each other.
     The transformation uses GPSLocationSensor records as base for O3gm Points.
-    For every other Sensor it uses the record whith the same save_timestamp and the first smaller capture_timestamp
+    For every other Sensor it uses the record with the same save_timestamp and the first smaller capture_timestamp
     than the GPS LocationSensor record.
     
     The SensoriumToO3gm object assigns its attributes and saves itself in this method
-    (actually this should be a constructor)
+
     '''
     
     self.save_timestamp = datetime.now()
@@ -213,29 +213,45 @@ class O3gmPointToO3gmPolygons(models.Model):
   '''
   
   save_timestamp = models.DateTimeField()
-  num_lacs = models.IntegerField(max_length=8) 
-  num_cells = models.IntegerField(max_length=8) 
+  num_lacs       = models.IntegerField(max_length=8) 
+  num_cells      = models.IntegerField(max_length=8) 
   
   def transform(self):
-    self.save_timestamp = datetime.now()
-    self.num_cells = 0
-    self.num_lacs = 0
     
+    new = False
+    
+    # Check if there where any new points since last point to polygon transformation
     try:
-      O3gmCell.objects.all().delete()
+      last_polys  = O3gmPointToO3gmPolygons.objects.latest('save_timestamp')
+      last_points = SensoriumToO3gm.objects.exclude(num_points=0
+                              ).filter(
+                               save_timestamp__gt=last_polys.save_timestamp
+                              ).count()
+      if (last_points > 0):
+        new = True
     except Exception, e:
       log.error(e)
-    else:
-      self.assign_cells()
+      
+    if (new):
+      self.save_timestamp = datetime.now()
+      self.num_cells = 0
+      self.num_lacs = 0
     
-    try:
-      O3gmLac.objects.all().delete()
-    except Exception, e:
-      log.error(e)
-    else:
-      self.assign_lacs()
+      try:
+        O3gmCell.objects.all().delete()
+      except Exception, e:
+        log.error(e)
+      else:
+        self.assign_cells()
+    
+      try:
+        O3gmLac.objects.all().delete()
+      except Exception, e:
+        log.error(e)
+      else:
+        self.assign_lacs()
   
-    self.save()
+      self.save()
     
     
   def assign_cells(self):

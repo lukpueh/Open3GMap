@@ -112,6 +112,8 @@ $(document).ready(function(){
     });
    
   $('#submit').click(function() {
+        $("#notification").html("");
+        $("#loading").show();
         $("#submit").attr("disabled", "disabled");
         var bounds = map.getExtent();
         bounds = bounds.transform(espg_900913, espg_4326).toBBOX();
@@ -133,7 +135,8 @@ $(document).ready(function(){
             var features = format.read(request.responseText);
             points_layer.addFeatures( features ); 
             points_layer.redraw();
-            $("#feedback").html("retrieved points: " + features.length);
+            $("#loading").hide();
+            $("#notification").html("retrieved points: " + features.length);
             $("#submit").removeAttr("disabled");
           }
       });

@@ -41,9 +41,10 @@
             {% include "o3gm/options.html" %}
             </div>
           </form>
-          <div id="feedback"></div>
-          <button id="submit" class="click click-button">show Points</button>
-
+          <button id="submit" class="click click-button">load Points</button>
+          <img class="feedback" id="loading" style="display:none;" src="{% static 'o3gm/img/load.gif' %}"></img>
+          <div class="feedback" id="notification"></div>
+          
         </div>
         <div id="links" class="sidebar-unit nav-target" style="display:none">
           <h2>Links</h2>

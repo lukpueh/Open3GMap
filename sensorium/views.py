@@ -35,6 +35,8 @@ def upload_files(request):
     for file_name, file_handler in request.FILES.iteritems():
       try:
         file_name = os.path.basename(str(file_name))
+        log.info("Uploading: " + str(file_name))
+        log.info("Size: "  + str(file_handler.size))
       except:
         file_name = "default"
       

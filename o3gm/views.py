@@ -165,14 +165,24 @@ def serve_point_json(request):
   return HttpResponse(status='400')
 
 def serve_cell_json(request):
-  queryset = models.O3gmCell.objects.all()
-  res = _convert_geodjango_to_json(queryset, cell_properties)
-  print res 
-  return HttpResponse(res, content_type='application/json')
+  qs = models.O3gmCell.objects.all()
+  try:
+    bbox = request.GET.get('bbox').split(',')
+    geom = Polygon.from_bbox(bbox)
+    qs    = qs.filter(geometry__intersects=geom)
+  except Exception, e:
+    log.error(e)
+  return HttpResponse(_convert_geodjango_to_json(qs, cell_properties), content_type='application/json')
 
 def serve_lac_json(request):
-  queryset = models.O3gmLac.objects.all()
-  return HttpResponse(_convert_geodjango_to_json(queryset, lac_properties), content_type='application/json')
+  qs = models.O3gmLac.objects.all()
+  try:
+    bbox = request.GET.get('bbox').split(',')
+    geom = Polygon.from_bbox(bbox)
+    qs    = qs.filter(geometry__intersects=geom)
+  except Exception, e:
+    log.error(e)
+  return HttpResponse(_convert_geodjango_to_json(qs, lac_properties), content_type='application/json')
 
 
 def serve_point_json_file(request):

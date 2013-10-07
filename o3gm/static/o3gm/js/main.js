@@ -32,23 +32,13 @@ $(document).ready(function(){
      styleMap: point_style_map,
    });
 
-  // cells_layer = new OpenLayers.Layer.Vector("Cells", {
-  //    styleMap: polygon_style_map,
-  //    strategies: [new OpenLayers.Strategy.Fixed()],
-  //    protocol: new OpenLayers.Protocol.HTTP({
-  //       url: "/o3gm/cell_json/",
-  //       format: new OpenLayers.Format.GeoJSON()
-  //    })
-  // });
-  // 
-  // lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
-  //    styleMap: polygon_style_map,
-  //    strategies: [new OpenLayers.Strategy.Fixed()],
-  //    protocol: new OpenLayers.Protocol.HTTP({
-  //       url: "/o3gm/lac_json/",
-  //       format: new OpenLayers.Format.GeoJSON()
-  //    })
-  // });
+  cells_layer = new OpenLayers.Layer.Vector("Cells", {
+     styleMap: polygon_style_map,
+  });
+  
+  lacs_layer = new OpenLayers.Layer.Vector("Lacs", {
+     styleMap: polygon_style_map,
+  });
   
    
   // grid_layer = new OpenLayers.Layer.Vector("Grid", {
@@ -60,8 +50,8 @@ $(document).ready(function(){
   //     })
   //  });
 
-  var layers = [points_layer];
-  //var layers = [points_layer, cells_layer, lacs_layer, grid_layer];
+  //var layers = [points_layer];
+  var layers = [points_layer, cells_layer, lacs_layer];
 
   map.addLayers(layers);
   
@@ -111,37 +101,70 @@ $(document).ready(function(){
         
     });
    
-  $('#submit').click(function() {
+  $('.submit').click(function() {
         $("#notification").html("");
         $("#loading").show();
         $("#submit").attr("disabled", "disabled");
         var bounds = map.getExtent();
         bounds = bounds.transform(espg_900913, espg_4326).toBBOX();
+
+        var format = new OpenLayers.Format.GeoJSON();
+        format.externalProjection = espg_4326;
+        format.internalProjection = espg_900913;
         
+        points_layer.destroyFeatures(); 
+        lacs_layer.destroyFeatures(); 
+        cells_layer.destroyFeatures(); 
+        
+        var type = $(this).attr("id");
+        
+        if (type == "submit-point") {
           OpenLayers.Request.GET({
-              url: "/o3gm/point_json/",
-              params: {
+            url: "/o3gm/point_json/",
+            params: {
               bbox            : bounds,
               data_source     : $('[name=select-data]').val(),
               nw_type         : $('[name=select-nw-type]').val(),
               operator        : $('[name=select-operator]').val()
-             },
-          success: function(request) {
-             
-            points_layer.destroyFeatures(); 
-            var format = new OpenLayers.Format.GeoJSON();
-            format.externalProjection = espg_4326;
-            format.internalProjection = espg_900913;
-            var features = format.read(request.responseText);
-            points_layer.addFeatures( features ); 
-            points_layer.redraw();
-            $("#loading").hide();
-            $("#notification").html("retrieved points: " + features.length);
-            $("#submit").removeAttr("disabled");
-          }
-      });
-    
-    
+            },
+            success: function(request) {
+              var features = format.read(request.responseText);
+              points_layer.addFeatures( features ); 
+              points_layer.redraw();
+              $("#loading").hide();
+              $("#notification").html("retrieved points: " + features.length);
+              $("#submit").removeAttr("disabled");
+            }
+          });
+        } else if (type == "submit-cell") {
+          OpenLayers.Request.GET({
+            url: "/o3gm/cell_json/",
+            params: {bbox: bounds},
+            success: function(request) {
+              var features = format.read(request.responseText);
+              cells_layer.addFeatures( features ); 
+              cells_layer.redraw();
+              $("#loading").hide();
+              $("#notification").html("retrieved cells: " + features.length);
+              $("#submit").removeAttr("disabled");
+            }
+          });
+        } else if (type == "submit-lac") {
+          OpenLayers.Request.GET({
+            url: "/o3gm/lac_json/",
+            params: {bbox: bounds},
+            success: function(request) {
+              var features = format.read(request.responseText);
+              lacs_layer.addFeatures( features ); 
+              lacs_layer.redraw();
+              $("#loading").hide();
+              $("#notification").html("retrieved lacs: " + features.length);
+              $("#submit").removeAttr("disabled");
+            }
+          });  
+        } else {
+          console.log("Wrong GET request!");
+        }
     });
 
 

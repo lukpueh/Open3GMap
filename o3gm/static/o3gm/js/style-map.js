@@ -32,9 +32,9 @@ var polygon_style_map = new OpenLayers.StyleMap({
     })
   });
   
-var grid_style_map = new OpenLayers.StyleMap({
- "default": new OpenLayers.Style({
-        fillColor: "#FF7274",
-        fillOpacity: 0.4,
-      })
-  });
+// var grid_style_map = new OpenLayers.StyleMap({
+//  "default": new OpenLayers.Style({
+//         fillColor: "#FF7274",
+//         fillOpacity: 0.4,
+//       })
+//   });

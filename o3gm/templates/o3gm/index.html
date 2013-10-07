@@ -41,10 +41,13 @@
             {% include "o3gm/options.html" %}
             </div>
           </form>
-          <button id="submit" class="click click-button">load Points</button>
+          <button id="submit-point" class="submit click click-button">load Points</button>
+          <div class="delim"></div>
+          <button id="submit-cell" class="submit click click-button">load Cells</button>
+          <button id="submit-lac" class="submit click click-button">load LACs</button>
+          <div class="delim"></div>
           <img class="feedback" id="loading" style="display:none;" src="{% static 'o3gm/img/load.gif' %}"></img>
           <div class="feedback" id="notification"></div>
-          
         </div>
         <div id="links" class="sidebar-unit nav-target" style="display:none">
           <h2>Links</h2>

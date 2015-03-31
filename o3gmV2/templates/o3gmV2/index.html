@@ -1,0 +1,22 @@
+<!DOCTYPE>
+
+{% load staticfiles %}
+<html>
+<head>
+    <title>Open3G Map v2</title>
+    <link rel="stylesheet" href="{% static 'o3gmV2/js/leaflet-0.7.3/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'o3gmV2/js/leaflet.markercluster/dist/MarkerCluster.css' %}" />
+    <link rel="stylesheet" href="{% static 'o3gmV2/js/leaflet.markercluster/dist/MarkerCluster.Default.css' %}" />
+    <link rel="stylesheet" href="{% static 'o3gmV2/css/main.css' %}" />
+
+    <script src="{% static 'o3gm/js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static 'o3gmV2/js/leaflet-0.7.3/leaflet.js' %}"></script>
+    <script src="{% static 'o3gmV2/js/leaflet.markercluster/dist/leaflet.markercluster-src.js' %}"></script>
+    <script src="{% static 'o3gmV2/js/main.js' %}"></script>
+
+</head>
+<body>
+    <h1>Open3G Map v2</h1>
+    <div id="map"></div>
+</body>
+</html>

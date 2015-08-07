@@ -31,7 +31,6 @@ function site(){
     canvas_container.setAttribute('class', 'canvas-container');
     legend.appendChild(canvas_container);
     
-    
     var canvas = document.createElement('canvas');
     canvas_container.appendChild(canvas);
     

@@ -16,7 +16,7 @@ def serve_point_json(request):
         return HttpResponse(status=200)
 
     if (request.method == 'GET'):
-        qs = models.O3gmPoint.objects.distinct('geometry').values('id', 'nw_type', 'geometry')[:50000]
+        qs = models.O3gmPoint.objects.distinct('geometry').values('id', 'nw_type', 'geometry')[:10]
         result = [[point['id'], str(point['nw_type']), point['geometry'].x, point['geometry'].y] for point in qs]
         return HttpResponse(json.dumps(result), content_type='application/json')
 

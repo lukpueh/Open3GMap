@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sensorium/', include('sensorium.urls')),
     url(r'^o3gm/', include('o3gm.urls')),
+    url(r'^o3gmv2/', include('o3gmV2.urls')),
     url(r'^', include('o3gm.urls'))
 
 )

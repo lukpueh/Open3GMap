@@ -21,7 +21,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'o3gm_db',                      # Or path to database file if using sqlite3.
-        'USER': 'o3gm_db_user',                      # Not used with sqlite3.
+        # 'USER': 'o3gm_db_user',                      # Not used with sqlite3.
+        'USER': 'topfpflanze',                      # Not used with sqlite3.
     }
 }
 
@@ -135,6 +136,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'o3gm',
+    'o3gmV2',
     'sensorium',
     'transform',
     'rtr',
